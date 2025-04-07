@@ -82,11 +82,9 @@ export default function QuizPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto">
-          <div className="flex justify-center items-center min-h-[400px]">
-            <div className="text-lg">Carregando questões...</div>
-          </div>
+      <div className="container mx-auto px-4 py-12">
+        <div className="flex justify-center items-center min-h-[400px]">
+          <div className="text-lg text-cyan-400">Carregando questões...</div>
         </div>
       </div>
     )
@@ -94,17 +92,15 @@ export default function QuizPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto">
-          <div className="flex flex-col items-center justify-center min-h-[400px]">
-            <p className="text-red-600 mb-4">{error}</p>
-            <button 
-              onClick={() => window.location.reload()} 
-              className="btn-primary"
-            >
-              Tentar Novamente
-            </button>
-          </div>
+      <div className="container mx-auto px-4 py-12">
+        <div className="flex flex-col items-center justify-center min-h-[400px]">
+          <p className="text-red-400 mb-4">{error}</p>
+          <button 
+            onClick={() => window.location.reload()} 
+            className="btn-primary"
+          >
+            Tentar Novamente
+          </button>
         </div>
       </div>
     )
@@ -112,11 +108,9 @@ export default function QuizPage() {
 
   if (questions.length === 0) {
     return (
-      <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto">
-          <div className="flex justify-center items-center min-h-[400px]">
-            <div className="text-lg">Nenhuma questão disponível.</div>
-          </div>
+      <div className="container mx-auto px-4 py-12">
+        <div className="flex justify-center items-center min-h-[400px]">
+          <div className="text-lg text-cyan-400">Nenhuma questão disponível.</div>
         </div>
       </div>
     )
@@ -126,35 +120,33 @@ export default function QuizPage() {
 
   if (!currentQuestionData) {
     return (
-      <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto">
-          <div className="flex justify-center items-center min-h-[400px]">
-            <div className="text-lg">Questão não encontrada.</div>
-          </div>
+      <div className="container mx-auto px-4 py-12">
+        <div className="flex justify-center items-center min-h-[400px]">
+          <div className="text-lg text-cyan-400">Questão não encontrada.</div>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="container mx-auto px-4 py-12">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Quiz de Legislação de Trânsito</h1>
+          <h1 className="text-3xl font-bold text-cyan-400">Quiz de Legislação de Trânsito</h1>
         </div>
 
-        <div className="bg-white rounded-lg shadow-lg p-8">
+        <div className="card">
           <div className="mb-6 flex justify-between items-center">
-            <span className="text-lg font-medium text-gray-700">
+            <span className="text-lg font-medium text-cyan-400">
               Questão {currentQuestion + 1} de {questions.length}
             </span>
-            <span className="text-lg font-medium text-gray-700">
+            <span className="text-lg font-medium text-cyan-400">
               Pontuação: {score}
             </span>
           </div>
 
           <div className="mb-8">
-            <h2 className="text-xl text-gray-900 mb-6">{currentQuestionData.pergunta}</h2>
+            <h2 className="text-xl text-white mb-6">{currentQuestionData.pergunta}</h2>
 
             <div className="space-y-4">
               {currentQuestionData.alternativas.map((alternativa, index) => (
@@ -162,14 +154,14 @@ export default function QuizPage() {
                   key={index}
                   onClick={() => handleAnswerSelect(index)}
                   disabled={isAnswered}
-                  className={`w-full text-left p-4 rounded-lg border transition-colors ${
+                  className={`quiz-option ${
                     isAnswered
                       ? index === currentQuestionData.resposta
-                        ? 'bg-green-100 border-green-500 text-green-800'
+                        ? 'quiz-option-correct'
                         : index === selectedAnswer
-                        ? 'bg-red-100 border-red-500 text-red-800'
-                        : 'bg-gray-50 border-gray-200 text-gray-800'
-                      : 'hover:bg-gray-50 border-gray-200 text-gray-800'
+                        ? 'quiz-option-incorrect'
+                        : ''
+                      : ''
                   }`}
                 >
                   {alternativa}
@@ -179,15 +171,15 @@ export default function QuizPage() {
           </div>
 
           {showExplanation && (
-            <div className="mb-6 p-4 bg-blue-50 rounded-lg">
-              <p className="text-blue-800">{currentQuestionData.explicacao}</p>
+            <div className="quiz-explanation">
+              <p>{currentQuestionData.explicacao}</p>
             </div>
           )}
 
           {isAnswered && (
             <button
               onClick={handleNextQuestion}
-              className="w-full py-3 px-4 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors"
+              className="w-full btn-primary"
             >
               {currentQuestion < questions.length - 1 ? 'Próxima Questão' : 'Ver Resultado'}
             </button>
