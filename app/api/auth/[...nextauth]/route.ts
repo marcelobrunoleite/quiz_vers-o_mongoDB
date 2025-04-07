@@ -1,13 +1,16 @@
 import NextAuth from 'next-auth';
-import { PrismaAdapter } from '@auth/prisma-adapter';
 import { PrismaClient } from '@prisma/client';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import bcrypt from 'bcryptjs';
+import { JWT } from 'next-auth/jwt';
 
 const prisma = new PrismaClient();
 
+interface ExtendedToken extends JWT {
+  role?: string;
+}
+
 const handler = NextAuth({
-  adapter: PrismaAdapter(prisma),
   providers: [
     CredentialsProvider({
       name: 'Credentials',
@@ -53,15 +56,15 @@ const handler = NextAuth({
     error: '/auth/error'
   },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user }): Promise<ExtendedToken> {
       if (user) {
         token.role = user.role;
       }
-      return token;
+      return token as ExtendedToken;
     },
     async session({ session, token }) {
-      if (session?.user) {
-        session.user.role = token.role;
+      if (session?.user && token) {
+        session.user.role = (token as ExtendedToken).role || 'user';
       }
       return session;
     }
