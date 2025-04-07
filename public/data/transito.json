@@ -1,114 +1,106 @@
 [
     {
-        "tema": "Legislação de Trânsito",
+        "id": "1",
         "pergunta": "Qual é a velocidade máxima permitida em vias arteriais urbanas quando não houver sinalização?",
-        "alternativas": {
-            "a": "60 km/h",
-            "b": "40 km/h",
-            "c": "80 km/h",
-            "d": "70 km/h",
-            "e": "50 km/h"
-        },
-        "resposta_correta": "a",
-        "explicacao": "Em vias arteriais urbanas, quando não houver sinalização regulamentadora, a velocidade máxima permitida é de 60 km/h.",
-        "dificuldade": "media"
+        "alternativas": [
+            "60 km/h",
+            "40 km/h",
+            "80 km/h",
+            "70 km/h",
+            "50 km/h"
+        ],
+        "resposta": 0,
+        "explicacao": "Em vias arteriais urbanas, quando não houver sinalização regulamentadora, a velocidade máxima permitida é de 60 km/h."
     },
     {
-        "tema": "Legislação de Trânsito",
+        "id": "2",
         "pergunta": "O que significa a placa R-1 (Parada Obrigatória)?",
-        "alternativas": {
-            "a": "Dê preferência",
-            "b": "Pare apenas se houver outros veículos",
-            "c": "Parada obrigatória",
-            "d": "Velocidade máxima permitida",
-            "e": "Proibido estacionar"
-        },
-        "resposta_correta": "c",
-        "explicacao": "A placa R-1 (PARE) indica que o condutor deve parar completamente o veículo antes de prosseguir.",
-        "dificuldade": "facil"
+        "alternativas": [
+            "Dê preferência",
+            "Pare apenas se houver outros veículos",
+            "Parada obrigatória",
+            "Velocidade máxima permitida",
+            "Proibido estacionar"
+        ],
+        "resposta": 2,
+        "explicacao": "A placa R-1 (PARE) indica que o condutor deve parar completamente o veículo antes de prosseguir."
     },
     {
-        "tema": "Legislação de Trânsito",
+        "id": "3",
         "pergunta": "Qual é a validade da Carteira Nacional de Habilitação para condutores com idade inferior a 50 anos?",
-        "alternativas": {
-            "a": "2 anos",
-            "b": "5 anos",
-            "c": "10 anos",
-            "d": "3 anos",
-            "e": "7 anos"
-        },
-        "resposta_correta": "c",
-        "explicacao": "Para condutores com menos de 50 anos, a CNH tem validade de 10 anos.",
-        "dificuldade": "facil"
+        "alternativas": [
+            "2 anos",
+            "5 anos",
+            "10 anos",
+            "3 anos",
+            "7 anos"
+        ],
+        "resposta": 2,
+        "explicacao": "Para condutores com menos de 50 anos, a CNH tem validade de 10 anos."
     },
     {
-        "tema": "Legislação de Trânsito",
+        "id": "4",
         "pergunta": "Qual é a idade mínima para obter a Carteira Nacional de Habilitação categoria B?",
-        "alternativas": {
-            "a": "16 anos",
-            "b": "17 anos",
-            "c": "18 anos",
-            "d": "19 anos",
-            "e": "21 anos"
-        },
-        "resposta_correta": "c",
-        "explicacao": "A idade mínima para obter a CNH categoria B é 18 anos completos.",
-        "dificuldade": "facil"
+        "alternativas": [
+            "16 anos",
+            "17 anos",
+            "18 anos",
+            "19 anos",
+            "21 anos"
+        ],
+        "resposta": 2,
+        "explicacao": "A idade mínima para obter a CNH categoria B é 18 anos completos."
     },
     {
-        "tema": "Legislação de Trânsito",
+        "id": "5",
         "pergunta": "Qual é a cor do sinal de trânsito que indica 'PARE'?",
-        "alternativas": {
-            "a": "Verde",
-            "b": "Amarelo",
-            "c": "Vermelho",
-            "d": "Azul",
-            "e": "Branco"
-        },
-        "resposta_correta": "c",
-        "explicacao": "O sinal vermelho indica que o condutor deve parar completamente o veículo.",
-        "dificuldade": "facil"
+        "alternativas": [
+            "Verde",
+            "Amarelo",
+            "Vermelho",
+            "Azul",
+            "Branco"
+        ],
+        "resposta": 2,
+        "explicacao": "O sinal vermelho indica que o condutor deve parar completamente o veículo."
     },
     {
-        "tema": "Legislação de Trânsito",
+        "id": "6",
         "pergunta": "Qual é a penalidade para quem dirige sob influência de álcool?",
-        "alternativas": {
-            "a": "Apenas multa",
-            "b": "Multa e suspensão do direito de dirigir",
-            "c": "Multa e advertência verbal",
-            "d": "Apenas suspensão do direito de dirigir",
-            "e": "Nenhuma penalidade"
-        },
-        "resposta_correta": "b",
-        "explicacao": "Dirigir sob influência de álcool é infração gravíssima, com penalidade de multa e suspensão do direito de dirigir por 12 meses.",
-        "dificuldade": "media"
+        "alternativas": [
+            "Apenas multa",
+            "Multa e suspensão do direito de dirigir",
+            "Multa e advertência verbal",
+            "Apenas suspensão do direito de dirigir",
+            "Nenhuma penalidade"
+        ],
+        "resposta": 1,
+        "explicacao": "Dirigir sob influência de álcool é infração gravíssima, com penalidade de multa e suspensão do direito de dirigir por 12 meses."
     },
     {
-        "tema": "Legislação de Trânsito",
+        "id": "7",
         "pergunta": "O que significa a placa A-33a?",
-        "alternativas": {
-            "a": "Área escolar",
-            "b": "Passagem sinalizada de pedestres",
-            "c": "Trânsito de pedestres",
-            "d": "Crianças",
-            "e": "Ciclistas"
-        },
-        "resposta_correta": "a",
-        "explicacao": "A placa A-33a (Área escolar) adverte o condutor para a existência, adiante, de área com grande circulação de escolares.",
-        "dificuldade": "media"
+        "alternativas": [
+            "Área escolar",
+            "Passagem sinalizada de pedestres",
+            "Trânsito de pedestres",
+            "Crianças",
+            "Ciclistas"
+        ],
+        "resposta": 0,
+        "explicacao": "A placa A-33a (Área escolar) adverte o condutor para a existência, adiante, de área com grande circulação de escolares."
     },
     {
-        "tema": "Legislação de Trânsito",
+        "id": "8",
         "pergunta": "Qual é o documento que comprova o registro e licenciamento do veículo?",
-        "alternativas": {
-            "a": "CNH",
-            "b": "CRLV",
-            "c": "CRV",
-            "d": "DPVAT",
-            "e": "IPVA"
-        },
-        "resposta_correta": "b",
-        "explicacao": "O Certificado de Registro e Licenciamento de Veículo (CRLV) é o documento que comprova o registro e licenciamento do veículo.",
-        "dificuldade": "media"
+        "alternativas": [
+            "CNH",
+            "CRLV",
+            "CRV",
+            "DPVAT",
+            "IPVA"
+        ],
+        "resposta": 1,
+        "explicacao": "O Certificado de Registro e Licenciamento de Veículo (CRLV) é o documento que comprova o registro e licenciamento do veículo."
     }
 ] 

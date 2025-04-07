@@ -19,17 +19,34 @@ export default function QuizComponent() {
   const [score, setScore] = useState(0)
   const [showExplanation, setShowExplanation] = useState(false)
   const [isAnswered, setIsAnswered] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     const loadQuestions = async () => {
       try {
+        setIsLoading(true)
+        setError(null)
         const response = await fetch('/data/transito.json')
+        
+        if (!response.ok) {
+          throw new Error(`Erro ao carregar questões: ${response.status}`)
+        }
+        
         const data = await response.json()
+        
+        if (!Array.isArray(data) || data.length === 0) {
+          throw new Error('Formato de dados inválido')
+        }
+
         // Embaralha as questões
         const shuffledQuestions = [...data].sort(() => Math.random() - 0.5).slice(0, 30)
         setQuestions(shuffledQuestions)
       } catch (error) {
         console.error('Erro ao carregar questões:', error)
+        setError('Não foi possível carregar as questões. Por favor, tente novamente.')
+      } finally {
+        setIsLoading(false)
       }
     }
 
@@ -37,7 +54,7 @@ export default function QuizComponent() {
   }, [])
 
   const handleAnswerSelect = (answerIndex: number) => {
-    if (isAnswered) return
+    if (isAnswered || !questions[currentQuestion]) return
     
     setSelectedAnswer(answerIndex)
     setIsAnswered(true)
@@ -63,11 +80,45 @@ export default function QuizComponent() {
     }
   }
 
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center min-h-[400px]">
+        <div className="text-lg">Carregando questões...</div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[400px]">
+        <p className="text-red-600 mb-4">{error}</p>
+        <button 
+          onClick={() => window.location.reload()} 
+          className="btn-primary"
+        >
+          Tentar Novamente
+        </button>
+      </div>
+    )
+  }
+
   if (questions.length === 0) {
-    return <div>Carregando questões...</div>
+    return (
+      <div className="flex justify-center items-center min-h-[400px]">
+        <div className="text-lg">Nenhuma questão disponível.</div>
+      </div>
+    )
   }
 
   const currentQuestionData = questions[currentQuestion]
+
+  if (!currentQuestionData) {
+    return (
+      <div className="flex justify-center items-center min-h-[400px]">
+        <div className="text-lg">Questão não encontrada.</div>
+      </div>
+    )
+  }
 
   return (
     <div className="max-w-2xl mx-auto">
@@ -80,7 +131,7 @@ export default function QuizComponent() {
         </span>
       </div>
 
-      <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+      <div className="card">
         <p className="text-lg mb-6">{currentQuestionData.pergunta}</p>
 
         <div className="space-y-4">
@@ -89,14 +140,14 @@ export default function QuizComponent() {
               key={index}
               onClick={() => handleAnswerSelect(index)}
               disabled={isAnswered}
-              className={`w-full text-left p-4 rounded-lg border transition-colors ${
+              className={`quiz-option ${
                 isAnswered
                   ? index === currentQuestionData.resposta
-                    ? 'bg-green-100 border-green-500'
+                    ? 'quiz-option-correct'
                     : index === selectedAnswer
-                    ? 'bg-red-100 border-red-500'
-                    : 'bg-gray-50 border-gray-200'
-                  : 'hover:bg-gray-50 border-gray-200'
+                    ? 'quiz-option-incorrect'
+                    : ''
+                  : ''
               }`}
             >
               {alternativa}
@@ -105,8 +156,8 @@ export default function QuizComponent() {
         </div>
 
         {showExplanation && (
-          <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-            <p className="text-blue-800">{currentQuestionData.explicacao}</p>
+          <div className="quiz-explanation">
+            <p>{currentQuestionData.explicacao}</p>
           </div>
         )}
 
