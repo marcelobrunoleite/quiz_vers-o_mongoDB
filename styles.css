@@ -249,24 +249,56 @@ body {
 
 .menu-principal {
     display: flex;
-    gap: 1.5rem;
-    margin-left: auto;
-    padding-right: 2rem;
+    align-items: center;
+    gap: 2rem;
 }
 
-.menu-btn {
-    padding: 1rem 2rem;
-    background: var(--darker-bg);
-    border: 2px solid var(--neon-primary);
+.nav-buttons {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.nav-buttons .user-name {
     color: var(--light-text);
-    border-radius: 8px;
+    font-weight: 500;
+    padding: 0 1rem;
+}
+
+/* Estilo unificado para botões de navegação */
+.btn-logout, 
+a.btn-logout {
+    background: transparent;
+    border: 1px solid var(--neon-primary);
+    color: var(--neon-primary);
+    padding: 0.3rem 1rem;
+    border-radius: 4px;
     cursor: pointer;
     transition: all 0.3s;
+    text-decoration: none;
+    font-size: 0.9rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.menu-btn.ativo {
+.btn-logout:hover,
+a.btn-logout:hover {
     background: var(--neon-primary);
-    box-shadow: 0 0 15px rgba(0, 255, 242, 0.3);
+    color: var(--darker-bg);
+    box-shadow: 0 0 10px rgba(0, 255, 242, 0.2);
+}
+
+/* Ajuste para o nome do usuário */
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    color: var(--light-text);
+}
+
+.user-name {
+    font-weight: 500;
 }
 
 #estudo-placas {
@@ -684,6 +716,7 @@ body {
 
 /* Estilos do Modal */
 .modal {
+    display: none;
     position: fixed;
     top: 0;
     left: 0;
@@ -691,11 +724,10 @@ body {
     height: 100%;
     background: rgba(0, 0, 0, 0.8);
     z-index: 1000;
-    display: none;
 }
 
 .modal.ativo {
-    display: flex !important;
+    display: flex;
     justify-content: center;
     align-items: center;
 }
@@ -704,29 +736,23 @@ body {
     background: var(--darker-bg);
     padding: 2rem;
     border-radius: 8px;
-    width: 90%;
-    max-width: 400px;
     position: relative;
+    width: 90%;
+    max-width: 500px;
     border: 1px solid var(--neon-primary);
-    box-shadow: 0 0 20px rgba(0, 255, 242, 0.2);
-}
-
-.modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1.5rem;
 }
 
 .close-modal {
+    position: absolute;
+    right: 1rem;
+    top: 1rem;
     font-size: 1.5rem;
     cursor: pointer;
-    color: var(--light-text);
-    transition: all 0.3s;
+    color: var(--neon-primary);
 }
 
 .form-group {
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
 }
 
 .form-group label {
@@ -738,23 +764,21 @@ body {
 .form-group input {
     width: 100%;
     padding: 0.8rem;
-    border: 1px solid rgba(0, 255, 242, 0.2);
-    background: rgba(10, 10, 31, 0.5);
-    border-radius: 4px;
+    border: 1px solid var(--neon-primary);
+    background: var(--dark-bg);
     color: var(--light-text);
+    border-radius: 4px;
 }
 
-.btn-submit {
-    width: 100%;
-    padding: 1rem;
-    background: var(--neon-primary);
-    border: none;
-    border-radius: 4px;
-    color: var(--darker-bg);
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s;
-} 
+.error-message {
+    color: #ff4444;
+    margin: 1rem 0;
+    font-size: 0.9rem;
+}
+
+.escondido {
+    display: none !important;
+}
 
 .estatisticas-categorias {
     margin: 2rem 0;
@@ -904,7 +928,7 @@ body {
 
 .explicacao-gabarito {
     margin-top: 1rem;
-    padding-top: 1rem;
+    padding-top: 1.5rem;
     border-top: 1px solid rgba(0, 255, 242, 0.2);
 }
 
@@ -1999,14 +2023,10 @@ input[type="tel"] {
     backface-visibility: hidden;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-    padding: 3rem;
     background: var(--darker-bg);
-    border: 1px solid var(--neon-primary);
+    border: 2px solid var(--neon-primary);
     border-radius: 12px;
-    box-shadow: 0 0 20px rgba(0, 255, 242, 0.2);
-    padding-top: 4rem;
+    overflow: hidden;
 }
 
 .flashcard-back {
@@ -2041,26 +2061,28 @@ input[type="tel"] {
     background: var(--neon-primary);
     color: var(--darker-bg);
     border: none;
-    padding: 0.8rem 2rem;
+    padding: 0.8rem 1.5rem;
     border-radius: 8px;
-    font-size: 1.1rem;
-    font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s ease;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    box-shadow: 0 0 15px rgba(0, 255, 242, 0.2);
-    position: absolute;
-    bottom: 2rem;
-    left: 50%;
-    transform: translateX(-50%);
+    margin-top: 2rem;
+    font-weight: 600;
+    transition: background-color 0.3s;
+    transform: none !important;
 }
 
+/* Container específico para o botão do flashcard */
+.flashcard-button-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: auto;
+}
+
+/* Hover state para o botão VER RESPOSTA */
 .btn-ver-resposta:hover {
-    transform: translateX(-50%) translateY(-2px);
     background: var(--neon-secondary);
-    color: var(--light-text);
-    box-shadow: 0 5px 15px rgba(119, 0, 255, 0.3);
+    box-shadow: 0 0 15px rgba(0, 255, 242, 0.2);
 }
 
 /* Ajuste do texto da explicação */
@@ -2569,3 +2591,2528 @@ input[type="tel"] {
         box-shadow: -5px 0 15px rgba(0, 0, 0, 0.3);
     }
 } 
+
+/* Ajustes no modal de inscrição */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 1000;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    overflow-y: auto;
+    padding: 20px;
+}
+
+.modal.ativo {
+    display: flex !important;
+}
+
+.modal-content {
+    background: var(--darker-bg);
+    padding: 2rem;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 400px;
+    position: relative;
+    border: 1px solid var(--neon-primary);
+    box-shadow: 0 0 20px rgba(0, 255, 242, 0.2);
+    margin: auto;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.close-modal {
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--light-text);
+    transition: all 0.3s;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--light-text);
+}
+
+.form-group input {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid rgba(0, 255, 242, 0.2);
+    background: rgba(10, 10, 31, 0.5);
+    border-radius: 4px;
+    color: var(--light-text);
+    font-size: 1rem;
+}
+
+/* Ajuste para telas menores */
+@media (max-width: 768px) {
+    .modal-content {
+        width: 90%;
+        margin: 20px auto;
+        padding: 1.5rem;
+    }
+
+    .form-group {
+        margin-bottom: 1rem;
+    }
+
+    .form-group input {
+        padding: 0.6rem;
+    }
+}
+
+/* Ajuste para scroll em dispositivos móveis */
+@media (max-height: 700px) {
+    .modal {
+        align-items: flex-start;
+        padding-top: 40px;
+    }
+} 
+
+/* Ajustes para a mensagem de boas-vindas */
+.top-bar {
+    background: var(--darker-bg);
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--neon-primary);
+    width: 100%;
+}
+
+.top-bar .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+}
+
+.welcome-message {
+    color: var(--light-text);
+    font-size: 1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 300px;
+}
+
+.auth-buttons {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    margin-left: auto;
+}
+
+/* Ajuste responsivo */
+@media (max-width: 768px) {
+    .top-bar .container {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+    }
+
+    .welcome-message {
+        max-width: 100%;
+        margin-bottom: 5px;
+    }
+
+    .auth-buttons {
+        margin: 0 auto;
+    }
+}
+
+/* Ajustes para scroll em dispositivos móveis */
+.card {
+    -webkit-overflow-scrolling: touch; /* Para iOS */
+    overflow-y: auto;
+    touch-action: pan-y; /* Permite scroll vertical com toque */
+    scroll-behavior: smooth;
+}
+
+/* Ajustes específicos para o conteúdo do card */
+.card-content {
+    height: 100%;
+    padding: 20px;
+    overscroll-behavior: contain; /* Previne scroll indesejado */
+}
+
+/* Ajustes para o container principal em mobile */
+@media (max-width: 768px) {
+    .site-main {
+        -webkit-overflow-scrolling: touch;
+        overflow-y: auto;
+        height: calc(100vh - 60px); /* Altura total menos o header */
+    }
+
+    .cards-grid {
+        padding-bottom: 20px; /* Espaço extra para scroll */
+    }
+
+    /* Melhorar área de toque */
+    .card {
+        min-height: 200px;
+        padding: 15px;
+        margin-bottom: 15px;
+        cursor: pointer;
+        user-select: none; /* Previne seleção de texto indesejada */
+    }
+
+    /* Ajuste para scroll suave em elementos com overflow */
+    .card-text {
+        overflow-y: auto;
+        max-height: 150px;
+        padding-right: 10px;
+        margin-right: -10px;
+        scrollbar-width: thin;
+    }
+}
+
+/* Estilização da barra de rolagem para melhor visualização */
+.card::-webkit-scrollbar {
+    width: 4px;
+}
+
+.card::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.card::-webkit-scrollbar-thumb {
+    background: var(--neon-primary);
+    border-radius: 4px;
+}
+
+/* Ajustes para scroll em dispositivos móveis */
+.flashcard {
+    background: var(--darker-bg);
+    border: 1px solid var(--neon-primary);
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 0.5rem auto;
+    box-shadow: 0 0 10px rgba(0, 255, 242, 0.2);
+    max-height: 60vh; /* Altura máxima relativa à viewport */
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    position: relative; /* Para contexto de posicionamento */
+}
+
+.flashcard-content {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch; /* Para iOS */
+    touch-action: pan-y; /* Permite scroll vertical */
+    padding: 0.8rem;
+    margin-bottom: 0.5rem;
+    /* Previne propagação do scroll */
+    overscroll-behavior: contain;
+    /* Garante que o conteúdo seja scrollável */
+    -webkit-user-select: text;
+    user-select: text;
+}
+
+/* Estilização da barra de rolagem */
+.flashcard-content::-webkit-scrollbar {
+    width: 4px;
+}
+
+.flashcard-content::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+}
+
+.flashcard-content::-webkit-scrollbar-thumb {
+    background: var(--neon-primary);
+    border-radius: 4px;
+}
+
+/* Ajustes específicos para mobile */
+@media (max-width: 768px) {
+    .flashcard {
+        max-height: 50vh; /* Menor altura em mobile */
+        margin: 0.5rem auto;
+    }
+
+    .flashcard-content {
+        /* Força o hardware acceleration */
+        -webkit-transform: translateZ(0);
+        transform: translateZ(0);
+        /* Melhora a performance do scroll */
+        will-change: transform;
+        /* Garante que o conteúdo seja scrollável */
+        touch-action: pan-y pinch-zoom;
+    }
+
+    /* Previne scroll do body quando scrollando o card */
+    .flashcard-content:focus {
+        outline: none;
+    }
+}
+
+/* Previne scroll do body quando interagindo com o card */
+body.scrolling-card {
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+}
+
+/* Estilos da Área Administrativa */
+.admin-main {
+    padding: 2rem 0;
+    min-height: calc(100vh - 60px);
+}
+
+.admin-grid {
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    gap: 2rem;
+}
+
+/* Menu Lateral */
+.admin-sidebar {
+    background: var(--darker-bg);
+    padding: 1.5rem;
+    border-radius: 8px;
+    border: 1px solid var(--neon-primary);
+}
+
+.admin-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.admin-nav .nav-item {
+    padding: 1rem;
+    color: var(--light-text);
+    text-decoration: none;
+    border-radius: 4px;
+    transition: all 0.3s;
+}
+
+.admin-nav .nav-item:hover,
+.admin-nav .nav-item.active {
+    background: var(--neon-primary);
+    color: var(--darker-bg);
+}
+
+/* Dashboard */
+.dashboard-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.dashboard-card {
+    background: var(--darker-bg);
+    padding: 1.5rem;
+    border-radius: 8px;
+    border: 1px solid var(--neon-primary);
+}
+
+.card-value {
+    font-size: 2rem;
+    color: var(--neon-primary);
+    margin-top: 1rem;
+}
+
+/* Tabelas */
+.products-table, .orders-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+.products-table th,
+.products-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid rgba(0, 255, 242, 0.2);
+}
+
+.status-badge {
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+}
+
+.status-badge.active {
+    background: rgba(0, 255, 136, 0.1);
+    color: #00ff88;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+    .admin-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-cards {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Adicione ao seu arquivo CSS existente */
+
+/* Estilo para o link de admin */
+.admin-link {
+    background: var(--neon-secondary);
+    padding: 0.3rem 1rem;
+    border-radius: 4px;
+    color: var(--light-text) !important;
+}
+
+.admin-link:hover {
+    background: var(--neon-accent);
+    transform: translateY(-2px);
+}
+
+/* Ajuste responsivo */
+@media (max-width: 768px) {
+    .admin-link {
+        margin: 0.5rem 0;
+    }
+}
+
+/* Estilos do Marketplace */
+.marketplace-section {
+    padding: 2rem 0;
+}
+
+.marketplace-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.marketplace-filters {
+    display: flex;
+    gap: 1rem;
+}
+
+.filter-select {
+    padding: 0.5rem;
+    border: 1px solid var(--neon-primary);
+    background: var(--darker-bg);
+    color: var(--light-text);
+    border-radius: 4px;
+}
+
+.search-box input {
+    padding: 0.5rem;
+    border: 1px solid var(--neon-primary);
+    background: var(--darker-bg);
+    color: var(--light-text);
+    border-radius: 4px;
+    width: 200px;
+}
+
+/* Grid de Produtos */
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+    padding: 1rem;
+}
+
+/* Card de Produto */
+.product-card {
+    background: rgba(10, 10, 31, 0.5);
+    border: 1px solid var(--neon-primary);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    box-shadow: 0 4px 15px rgba(0, 255, 242, 0.1);
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 255, 242, 0.2);
+    border-color: var(--neon-accent);
+}
+
+.product-image {
+    position: relative;
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    border-bottom: 1px solid rgba(0, 255, 242, 0.2);
+}
+
+.product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.product-card:hover .product-image img {
+    transform: scale(1.05);
+}
+
+.discount-badge {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: var(--neon-accent);
+    color: var(--darker-bg);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    box-shadow: 0 2px 10px rgba(255, 0, 212, 0.3);
+}
+
+.product-info {
+    padding: 1.5rem;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.product-info h3 {
+    color: var(--neon-primary);
+    font-size: 1.4rem;
+    margin: 0 0 1rem;
+    line-height: 1.3;
+}
+
+.product-info p {
+    color: var(--light-text);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin: 0 0 1.5rem;
+    flex-grow: 1;
+}
+
+.product-price {
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.original-price {
+    color: var(--light-text);
+    text-decoration: line-through;
+    opacity: 0.7;
+    font-size: 0.9rem;
+}
+
+.final-price {
+    color: var(--neon-primary);
+    font-size: 1.6rem;
+    font-weight: 600;
+    text-shadow: 0 0 10px rgba(0, 255, 242, 0.3);
+}
+
+.btn-add-cart {
+    width: 100%;
+    padding: 1rem;
+    background: var(--neon-primary);
+    color: var(--darker-bg);
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn-add-cart:hover {
+    background: var(--neon-accent);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 255, 242, 0.3);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .products-grid {
+        grid-template-columns: 1fr;
+        padding: 0.5rem;
+        gap: 1.5rem;
+    }
+
+    .product-image {
+        height: 180px;
+    }
+
+    .product-info {
+        padding: 1rem;
+    }
+
+    .product-info h3 {
+        font-size: 1.2rem;
+    }
+
+    .final-price {
+        font-size: 1.4rem;
+    }
+}
+
+.product-info .btn-add-cart {
+    margin-top: 1rem;
+}
+
+.product-info .btn-add-cart:hover {
+    background: var(--neon-accent);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 255, 242, 0.3);
+}
+
+/* Estilos para páginas de pagamento */
+.payment-status {
+    text-align: center;
+    padding: 3rem;
+    background: var(--darker-bg);
+    border-radius: 8px;
+    border: 1px solid var(--neon-primary);
+    margin: 2rem auto;
+    max-width: 600px;
+}
+
+.payment-status.success {
+    border-color: #00ff88;
+}
+
+.payment-status.failure {
+    border-color: #ff4444;
+}
+
+.payment-status h1 {
+    color: var(--neon-primary);
+    margin-bottom: 1rem;
+}
+
+.order-details, .error-details {
+    margin: 2rem 0;
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+}
+
+.next-steps {
+    text-align: left;
+    margin: 2rem 0;
+}
+
+.next-steps ul {
+    list-style: none;
+    padding: 0;
+}
+
+.next-steps li {
+    margin: 0.5rem 0;
+    padding-left: 1.5rem;
+    position: relative;
+}
+
+.next-steps li:before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: #00ff88;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 2rem;
+}
+
+.btn-secondary {
+    background: transparent;
+    border: 1px solid var(--neon-primary);
+    color: var(--neon-primary);
+    padding: 0.8rem 1.5rem;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: all 0.3s;
+}
+
+.btn-secondary:hover {
+    background: var(--neon-primary);
+    color: var(--darker-bg);
+}
+
+/* Grid de Produtos */
+.marketplace-container {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 2rem;
+    position: relative;
+}
+
+.products-section {
+    flex: 1;
+}
+
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+/* Carrinho Flutuante */
+.floating-cart {
+    background: var(--darker-bg);
+    border: 1px solid var(--neon-primary);
+    border-radius: 12px;
+    padding: 1.5rem;
+    height: fit-content;
+    position: sticky;
+    top: 2rem;
+    box-shadow: 0 4px 15px rgba(0, 255, 242, 0.1);
+}
+
+.cart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(0, 255, 242, 0.2);
+}
+
+.cart-header h3 {
+    color: var(--neon-primary);
+    font-size: 1.4rem;
+    margin: 0;
+}
+
+.cart-count {
+    background: var(--neon-accent);
+    color: var(--darker-bg);
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-weight: 600;
+}
+
+.cart-items {
+    max-height: calc(100vh - 400px);
+    overflow-y: auto;
+    margin-bottom: 1.5rem;
+    padding-right: 0.5rem;
+}
+
+.cart-items::-webkit-scrollbar {
+    width: 4px;
+}
+
+.cart-items::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.cart-items::-webkit-scrollbar-thumb {
+    background: var(--neon-primary);
+    border-radius: 4px;
+}
+
+.cart-item {
+    display: grid;
+    grid-template-columns: 60px 1fr auto;
+    gap: 1rem;
+    align-items: center;
+    padding: 1rem;
+    border-bottom: 1px solid rgba(0, 255, 242, 0.1);
+    transition: all 0.3s ease;
+}
+
+.cart-item:hover {
+    background: rgba(0, 255, 242, 0.05);
+}
+
+.cart-item img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.item-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.item-info h4 {
+    margin: 0;
+    color: var(--light-text);
+    font-size: 0.9rem;
+}
+
+.item-quantity {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.quantity-btn {
+    background: transparent;
+    border: 1px solid var(--neon-primary);
+    color: var(--neon-primary);
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.quantity-btn:hover {
+    background: var(--neon-primary);
+    color: var(--darker-bg);
+}
+
+.item-price {
+    color: var(--neon-primary);
+    font-weight: 600;
+}
+
+.remove-item {
+    background: transparent;
+    border: none;
+    color: var(--neon-accent);
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding: 0.2rem;
+    transition: all 0.3s ease;
+}
+
+.remove-item:hover {
+    transform: scale(1.2);
+    color: #ff4444;
+}
+
+.cart-footer {
+    border-top: 1px solid rgba(0, 255, 242, 0.2);
+    padding-top: 1.5rem;
+}
+
+.cart-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    font-size: 1.2rem;
+}
+
+.cart-total-label {
+    color: var(--light-text);
+}
+
+.cart-total-value {
+    color: var(--neon-primary);
+    font-weight: 600;
+    font-size: 1.4rem;
+}
+
+.btn-checkout {
+    width: 100%;
+    padding: 1rem;
+    background: var(--neon-primary);
+    color: var(--darker-bg);
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.btn-checkout:hover {
+    background: var(--neon-accent);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 255, 242, 0.3);
+}
+
+.btn-checkout:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.btn-checkout .fa-spinner {
+    margin-right: 0.5rem;
+}
+
+/* Responsividade */
+@media (max-width: 1024px) {
+    .marketplace-container {
+        grid-template-columns: 1fr;
+    }
+
+    .floating-cart {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        top: auto;
+        width: 100%;
+        border-radius: 12px 12px 0 0;
+        z-index: 100;
+        transform: translateY(calc(100% - 60px));
+        transition: transform 0.3s ease;
+    }
+
+    .floating-cart.expanded {
+        transform: translateY(0);
+    }
+
+    .cart-header {
+        cursor: pointer;
+    }
+
+    .cart-items {
+        max-height: 50vh;
+    }
+}
+
+@media (max-width: 768px) {
+    .products-grid {
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: 1rem;
+    }
+}
+
+/* Modal de Pagamento */
+#payment-modal .modal-content {
+    max-width: 600px;
+    padding: 2rem;
+}
+
+#payment-modal h2 {
+    color: var(--neon-primary);
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.cho-container {
+    min-height: 400px;
+}
+
+/* Estilos para simulação de pagamento */
+.payment-simulation {
+    padding: 2rem;
+    text-align: center;
+}
+
+.payment-simulation h3 {
+    color: var(--neon-primary);
+    margin-bottom: 2rem;
+}
+
+.payment-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.btn-success, .btn-failure {
+    padding: 1rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-success {
+    background: #00ff88;
+    color: var(--darker-bg);
+}
+
+.btn-failure {
+    background: #ff4444;
+    color: white;
+}
+
+.btn-success:hover, .btn-failure:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 255, 242, 0.3);
+}
+
+/* Estilos do Modal de Login */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 1000;
+}
+
+.modal.ativo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: var(--darker-bg);
+    padding: 2rem;
+    border-radius: 12px;
+    position: relative;
+    width: 90%;
+    max-width: 400px;
+    border: 1px solid var(--neon-primary);
+}
+
+#login-modal .modal-content {
+    background: #0A0A1F;
+    border: 1px solid #00FFF2;
+    padding: 2rem;
+    border-radius: 12px;
+    width: 400px;
+}
+
+#login-modal h2 {
+    color: white;
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 2rem;
+}
+
+#login-modal .form-group {
+    margin-bottom: 1.5rem;
+}
+
+#login-modal .form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: white;
+    font-size: 1rem;
+}
+
+#login-modal .form-group input {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #FF00D4;
+    background: transparent;
+    color: white;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+#login-modal .form-group input:focus {
+    outline: none;
+    border-color: #FF00D4;
+}
+
+#login-modal form button[type="submit"] {
+    width: 100%;
+    padding: 0.8rem;
+    background-color: #00FFF2;
+    color: #0A0A1F;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    margin-bottom: 0.5rem;
+    text-align: center;
+    display: block;
+}
+
+#login-modal .forgot-password {
+    color: #00FFF2;
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+#login-modal form {
+    display: flex;
+    flex-direction: column;
+}
+
+#login-modal .close-modal {
+    position: absolute;
+    right: 1.5rem;
+    top: 1rem;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: white;
+}
+
+#signup-modal .modal-content {
+    background: #0A0A1F;
+    border: 1px solid #00FFF2;
+    padding: 2rem;
+    border-radius: 12px;
+    width: 400px;
+}
+
+#signup-modal h2 {
+    color: white;
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 2rem;
+}
+
+#signup-modal .form-group {
+    margin-bottom: 1.5rem;
+}
+
+#signup-modal .form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: white;
+    font-size: 1rem;
+}
+
+#signup-modal .form-group input {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #FF00D4;
+    background: transparent;
+    color: white;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+#signup-modal .form-group input:focus {
+    outline: none;
+    border-color: #FF00D4;
+}
+
+#signup-modal form button[type="submit"] {
+    width: 100%;
+    padding: 0.8rem;
+    background-color: #00FFF2;
+    color: #0A0A1F;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    margin-bottom: 0.5rem;
+    text-align: center;
+    display: block;
+}
+
+/* Estilos do Modal de Produto */
+#productModal .close-modal {
+    position: absolute;
+    right: 1.5rem;
+    top: 1rem;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: white;
+    background: transparent;
+    border: none;
+    padding: 0.5rem;
+    z-index: 1000;
+}
+
+#productModal .close-modal:hover {
+    color: var(--neon-primary);
+}
+
+#productModal .modal-content {
+    position: relative;
+    background: var(--darker-bg);
+    padding: 2rem;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 600px;
+    border: 1px solid var(--neon-primary);
+}
+
+/* Ajustes específicos para o navbar */
+.main-header {
+    background: var(--darker-bg);
+    border-bottom: 1px solid rgba(0, 255, 242, 0.1);
+    padding: 0.5rem 0; /* Reduzido de 1rem para 0.5rem */
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 50px; /* Reduzido de 60px para 50px */
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.logo img {
+    height: 40px; /* Reduzido de 50px para 40px */
+    width: auto;
+}
+
+.site-title {
+    font-size: 1.5rem; /* Reduzido de 1.8rem para 1.5rem */
+    font-weight: 600;
+    color: var(--neon-primary);
+    margin: 0;
+}
+
+.menu-principal {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+}
+
+.nav-link {
+    color: var(--light-text);
+    text-decoration: none;
+    font-size: 0.9rem; /* Reduzido de 1rem para 0.9rem */
+    transition: color 0.3s;
+    padding: 0.3rem 0.5rem; /* Reduzido de 0.5rem 1rem para 0.3rem 0.5rem */
+}
+
+/* Estilos para o painel administrativo */
+.admin-header {
+    background: var(--darker-bg);
+    border-bottom: 1px solid rgba(0, 255, 242, 0.1);
+    padding: 0.5rem 0;
+}
+
+.admin-header .header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 50px;
+}
+
+.admin-header .logo {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.admin-header .logo img {
+    height: 40px;
+    width: auto;
+}
+
+.admin-header .site-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--neon-primary);
+    margin: 0;
+}
+
+.admin-header .menu-principal {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+}
+
+.admin-header .nav-link {
+    color: var(--light-text);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.3s;
+    padding: 0.3rem 0.5rem;
+}
+
+.admin-header .nav-link:hover {
+    color: var(--neon-primary);
+}
+
+.admin-header .user-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    color: var(--light-text);
+}
+
+.admin-header .user-name {
+    font-weight: 500;
+}
+
+.btn-logout {
+    background: transparent;
+    border: 1px solid var(--neon-primary);
+    color: var(--neon-primary);
+    padding: 0.3rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-logout:hover {
+    background: var(--neon-primary);
+    color: var(--darker-bg);
+}
+
+/* Ajustes no layout do painel */
+.admin-main {
+    padding-top: 2rem;
+}
+
+.admin-grid {
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    gap: 2rem;
+}
+
+.admin-sidebar {
+    background: rgba(0, 255, 242, 0.05);
+    padding: 1rem;
+    border-radius: 8px;
+    height: fit-content;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .admin-header .site-title {
+        font-size: 1.2rem;
+    }
+
+    .admin-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-header .menu-principal {
+        gap: 1rem;
+    }
+}
+
+/* Ajustes no layout do painel */
+.admin-section {
+    display: none; /* Esconde todas as seções por padrão */
+}
+
+.admin-section.active {
+    display: block; /* Mostra apenas a seção ativa */
+}
+
+.admin-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.admin-nav .nav-item {
+    padding: 1rem;
+    color: var(--light-text);
+    text-decoration: none;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    background: rgba(0, 255, 242, 0.05);
+}
+
+.admin-nav .nav-item:hover {
+    background: rgba(0, 255, 242, 0.1);
+    color: var(--neon-primary);
+}
+
+.admin-nav .nav-item.active {
+    background: var(--neon-primary);
+    color: var(--darker-bg);
+}
+
+.admin-content {
+    background: rgba(0, 255, 242, 0.02);
+    border-radius: 12px;
+    padding: 2rem;
+    min-height: 80vh;
+}
+
+/* Estilos para as seções */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.section-title {
+    font-size: 1.8rem;
+    color: var(--neon-primary);
+    margin: 0;
+}
+
+/* Estilos para promoções */
+.promotions-grid {
+    display: grid;
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
+.promotion-card {
+    background: rgba(0, 255, 242, 0.05);
+    border-radius: 8px;
+    padding: 1.5rem;
+    border: 1px solid rgba(0, 255, 242, 0.1);
+}
+
+.promotion-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.promotion-header h3 {
+    margin: 0;
+    color: var(--neon-primary);
+}
+
+.status-badge {
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+}
+
+.status-badge.active {
+    background: rgba(0, 255, 0, 0.1);
+    color: #00ff00;
+}
+
+.status-badge.inactive {
+    background: rgba(255, 0, 0, 0.1);
+    color: #ff0000;
+}
+
+.promotion-content {
+    margin-bottom: 1rem;
+}
+
+.promotion-details {
+    background: rgba(0, 0, 0, 0.2);
+    padding: 1rem;
+    border-radius: 4px;
+    margin-top: 1rem;
+}
+
+.promotion-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+/* Estilos para botões primários */
+.btn-primary {
+    background: transparent;
+    border: 2px solid var(--neon-primary);
+    color: var(--neon-primary);
+    padding: 0.8rem 1.5rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-primary:hover {
+    background: var(--neon-primary);
+    color: var(--darker-bg);
+    box-shadow: 0 0 15px rgba(0, 255, 242, 0.3);
+    transform: translateY(-1px);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+/* Estilos específicos para botão de nova promoção */
+.btn-primary.btn-new-promotion {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary.btn-new-promotion::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(0, 255, 242, 0.2),
+        transparent
+    );
+    transition: 0.5s;
+}
+
+.btn-primary.btn-new-promotion:hover::before {
+    left: 100%;
+}
+
+/* Estilos para botões de ação nas promoções */
+.btn-toggle {
+    background: transparent;
+    border: 1px solid var(--neon-primary);
+    color: var(--neon-primary);
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-toggle.active {
+    background: var(--neon-primary);
+    color: var(--darker-bg);
+}
+
+.btn-toggle:hover {
+    box-shadow: 0 0 10px rgba(0, 255, 242, 0.2);
+}
+
+.btn-edit, .btn-delete {
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-edit {
+    background: transparent;
+    border: 1px solid var(--neon-secondary);
+    color: var(--neon-secondary);
+}
+
+.btn-delete {
+    background: transparent;
+    border: 1px solid #ff4444;
+    color: #ff4444;
+}
+
+.btn-edit:hover {
+    background: var(--neon-secondary);
+    color: var(--darker-bg);
+}
+
+.btn-delete:hover {
+    background: #ff4444;
+    color: var(--darker-bg);
+}
+
+.error-message {
+    background: rgba(255, 0, 0, 0.1);
+    border: 1px solid #ff4444;
+    color: #ff4444;
+    padding: 1rem;
+    border-radius: 8px;
+    text-align: center;
+    margin: 1rem 0;
+}
+
+.error-message p {
+    margin: 0.5rem 0;
+}
+
+/* Estilos para os botões de navegação dos flashcards */
+.btn-anterior,
+.btn-proximo {
+    background: transparent;
+    border: 2px solid var(--neon-primary);
+    color: var(--neon-primary);
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-weight: 500;
+}
+
+.btn-anterior:hover:not(.disabled),
+.btn-proximo:hover:not(.disabled) {
+    background: var(--neon-primary);
+    color: var(--darker-bg);
+    box-shadow: 0 0 10px rgba(0, 255, 242, 0.2);
+}
+
+.btn-anterior.disabled,
+.btn-proximo.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    border-color: var(--light-text);
+    color: var(--light-text);
+}
+
+.btn-ver-resposta {
+    background: transparent;
+    border: 2px solid var(--neon-secondary);
+    color: var(--neon-secondary);
+    padding: 0.8rem 2rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-weight: 500;
+    margin: 1rem 0;
+}
+
+.btn-ver-resposta:hover {
+    background: var(--neon-secondary);
+    color: var(--darker-bg);
+    box-shadow: 0 0 15px rgba(119, 0, 255, 0.3);
+}
+
+.card-counter {
+    color: var(--light-text);
+    text-align: center;
+    margin: 1rem 0;
+    font-size: 0.9rem;
+}
+
+/* Estilos para a seção de flashcards */
+.flashcards-section {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.tema-select {
+    background: var(--darker-bg);
+    border: 2px solid var(--neon-primary);
+    color: var(--light-text);
+    padding: 0.5rem;
+    border-radius: 4px;
+    min-width: 200px;
+}
+
+.navigation {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.flashcard-container {
+    perspective: 1000px;
+    min-height: 400px;
+    margin: 2rem 0;
+}
+
+.flashcard {
+    width: 100%;
+    height: 400px;
+    position: relative;
+    cursor: pointer;
+}
+
+.flashcard-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.8s;
+    transform-style: preserve-3d;
+}
+
+.flashcard-front,
+.flashcard-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    display: flex;
+    flex-direction: column;
+    background: var(--darker-bg);
+    border: 2px solid var(--neon-primary);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.flashcard-back {
+    transform: rotateY(180deg);
+}
+
+.questao-texto,
+.resposta-texto {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2rem;
+    color: var(--light-text);
+    line-height: 1.6;
+    padding: 2rem;
+    overflow-y: auto;
+    /* Ajustado para garantir espaço para o botão */
+    max-height: calc(100% - 100px);
+}
+
+.explicacao {
+    margin-bottom: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(0, 255, 242, 0.2);
+    width: 100%;
+}
+
+.explicacao h3 {
+    color: var(--neon-primary);
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+}
+
+.card-actions {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 1.5rem;
+    background: rgba(0, 0, 0, 0.2);
+    border-top: 1px solid rgba(0, 255, 242, 0.2);
+    text-align: center;
+}
+
+.btn-ver-resposta,
+.btn-ver-pergunta {
+    background: transparent;
+    border: 2px solid var(--neon-secondary);
+    color: var(--neon-secondary);
+    padding: 0.8rem 2rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    min-width: 200px;
+    font-size: 1.1rem; /* Aumentado o tamanho da fonte */
+}
+
+.btn-ver-resposta:hover,
+.btn-ver-pergunta:hover {
+    background: var(--neon-secondary);
+    color: var(--darker-bg);
+    box-shadow: 0 0 15px rgba(119, 0, 255, 0.3);
+    transform: translateY(-2px);
+}
+
+.btn-ver-resposta:active,
+.btn-ver-pergunta:active {
+    transform: translateY(0);
+}
+
+/* Estilos para a página de cursos */
+.courses-container {
+    max-width: 1800px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* Seção de cursos */
+.courses-section {
+    margin-bottom: 3rem;
+}
+
+.section-title {
+    color: var(--neon-primary);
+    font-size: 2rem;
+    margin-bottom: 2rem;
+}
+
+/* Layout do conteúdo do curso */
+.course-content-wrapper {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 2rem;
+    min-height: calc(100vh - 400px);
+}
+
+/* Sidebar */
+.lessons-sidebar {
+    background: var(--darker-bg);
+    border-radius: 12px;
+    border: 1px solid var(--neon-primary);
+    padding: 1rem;
+    height: fit-content;
+}
+
+.lessons-list h2 {
+    color: var(--neon-primary);
+    margin-bottom: 1.5rem;
+    font-size: 1.4rem;
+}
+
+/* Área de conteúdo */
+.course-content {
+    background: var(--darker-bg);
+    border-radius: 12px;
+    border: 1px solid var(--neon-primary);
+    padding: 1.5rem;
+    min-height: 600px;
+}
+
+/* Player de vídeo */
+.video-player {
+    width: 100%;
+    height: 100%;
+}
+
+.video-container {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%;
+    height: 0;
+    overflow: hidden;
+    border-radius: 8px;
+    border: 2px solid var(--neon-primary);
+}
+
+.video-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* Itens do menu */
+.lesson-item {
+    margin-bottom: 1rem;
+    padding: 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.lesson-item:hover {
+    background: rgba(0, 255, 242, 0.1);
+}
+
+.lesson-item.active {
+    background: rgba(0, 255, 242, 0.2);
+    border-left: 3px solid var(--neon-primary);
+}
+
+/* Responsividade */
+@media (max-width: 1024px) {
+    .course-content-wrapper {
+        grid-template-columns: 250px 1fr;
+        gap: 1rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .course-content-wrapper {
+        grid-template-columns: 1fr;
+    }
+    
+    .courses-container {
+        padding: 1rem;
+    }
+}
+
+/* Carrossel de cursos */
+.courses-section {
+    margin-bottom: 3rem;
+    padding: 2rem;
+    background: rgba(0, 255, 242, 0.05);
+    border-radius: 12px;
+    border: 1px solid var(--neon-primary);
+}
+
+.section-title {
+    color: var(--neon-primary);
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+/* Ajuste do wrapper */
+.courses-carousel-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 1400px;
+    height: 350px;
+    margin: 0 auto;
+    perspective: 2000px;
+    overflow: visible;
+    padding: 20px 0;
+    margin-bottom: 60px; /* Espaço para os dots */
+}
+
+/* Dots de navegação */
+.carousel-dots {
+    position: absolute;
+    bottom: -50px; /* Posicionamento mais abaixo */
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 5;
+}
+
+.dot {
+    width: 10px;
+    height: 10px;
+    background: rgba(0, 255, 242, 0.1);
+    border: 1px solid rgba(0, 255, 242, 0.3);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.dot:hover {
+    background: rgba(0, 255, 242, 0.2);
+    border-color: rgba(0, 255, 242, 0.5);
+}
+
+.dot.active {
+    width: 30px; /* Mais largo quando ativo */
+    background: #00FFF2;
+    border-color: rgba(0, 255, 242, 0.8);
+    box-shadow: 0 0 10px rgba(0, 255, 242, 0.4);
+    border-radius: 5px; /* Mais retangular */
+}
+
+/* Responsividade dos dots */
+@media (max-width: 768px) {
+    .courses-carousel-wrapper {
+        margin-bottom: 50px;
+    }
+
+    .carousel-dots {
+        bottom: -40px;
+        gap: 10px;
+    }
+
+    .dot {
+        width: 8px;
+        height: 8px;
+    }
+
+    .dot.active {
+        width: 24px;
+    }
+}
+
+.courses-carousel {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transition: transform 1.2s ease-in-out;
+}
+
+.course-card {
+    position: absolute;
+    width: 280px;
+    height: 294px;
+    left: 50%;
+    top: 50%;
+    transform-origin: center;
+    transition: all 1.2s ease-in-out;
+    background: linear-gradient(180deg, rgba(13, 13, 24, 0.9) 0%, rgba(5, 5, 12, 0.95) 100%);
+    border: 1px solid rgba(0, 255, 242, 0.3);
+    border-radius: 16px;
+    overflow: hidden;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Posicionamento e estilo dos cards */
+.course-card.active {
+    transform: translate(-50%, -50%) translateZ(126px) scale(1.1);
+    opacity: 1;
+    z-index: 3;
+    filter: blur(0);
+    border: 1px solid rgba(0, 255, 242, 0.5);
+    box-shadow: 0 0 30px rgba(0, 255, 242, 0.2),
+                inset 0 0 20px rgba(0, 255, 242, 0.1);
+}
+
+.course-card.active .course-info h3 {
+    text-shadow: 0 0 30px rgba(0, 255, 242, 0.5);
+}
+
+.course-card.prev,
+.course-card.next {
+    transform: translate(-150%, -50%) translateZ(-126px) rotateY(45deg);
+    opacity: 0.3;
+    z-index: 1;
+    filter: blur(2px) brightness(0.7);
+    border-color: rgba(0, 255, 242, 0.1);
+}
+
+.course-card.next {
+    transform: translate(50%, -50%) translateZ(-126px) rotateY(-45deg);
+}
+
+/* Hover effect */
+.course-card.active:hover {
+    border-color: rgba(0, 255, 242, 0.8);
+    box-shadow: 0 0 40px rgba(0, 255, 242, 0.3),
+                inset 0 0 30px rgba(0, 255, 242, 0.2);
+}
+
+/* Imagem do card */
+.course-card img {
+    width: 100%;
+    height: 100px;
+    object-fit: cover;
+    opacity: 0.8;
+    border-bottom: 1px solid rgba(0, 255, 242, 0.1);
+}
+
+/* Conteúdo do card */
+.course-info {
+    padding: 1.8rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: transparent;
+}
+
+/* Título do curso */
+.course-info h3 {
+    color: #00FFF2;
+    font-family: 'Poppins', sans-serif;
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 1.2rem;
+    text-shadow: 0 0 20px rgba(0, 255, 242, 0.4);
+    letter-spacing: 0.5px;
+}
+
+/* Descrição do curso */
+.course-info p {
+    color: rgba(255, 255, 255, 0.9);
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.1rem;
+    line-height: 1.5;
+    margin-bottom: 1.5rem;
+    font-weight: 300;
+    letter-spacing: 0.3px;
+}
+
+/* Duração do curso */
+.course-meta {
+    color: rgba(255, 255, 255, 0.7);
+    font-family: 'Poppins', sans-serif;
+    font-size: 1rem;
+    font-weight: 300;
+    letter-spacing: 0.2px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 1rem;
+}
+
+/* Novo estilo para o card na posição 0 quando não está ativo */
+.course-card:first-child:not(.active):not(.prev):not(.next) {
+    transform: translate(-50%, -50%) translateZ(-252px) scale(0.8);
+    opacity: 0.3;
+    z-index: 0;
+    filter: blur(2px) brightness(0.6);
+}
+
+/* Novo estilo para o último card quando não está ativo */
+.course-card:last-child:not(.active):not(.prev):not(.next) {
+    transform: translate(-50%, -50%) translateZ(-252px) scale(0.8);
+    opacity: 0.3;
+    z-index: 0;
+    filter: blur(2px) brightness(0.6);
+}
+
+/* Ajuste para os cards intermediários não visíveis */
+.course-card:not(.active):not(.prev):not(.next):not(:first-child):not(:last-child) {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.7);
+    z-index: -1;
+}
+
+.btn-verificar {
+    background: var(--neon-primary);
+    color: var(--darker-bg);
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 2rem;
+    font-weight: 600;
+    transition: background-color 0.3s;
+}
+
+.btn-verificar:hover {
+    background: var(--neon-secondary);
+    box-shadow: 0 0 15px rgba(0, 255, 242, 0.2);
+}
+
+/* Mesmo estilo para o botão de concluir */
+.btn-concluir {
+    background: var(--neon-primary);
+    color: var(--darker-bg);
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 2rem;
+    font-weight: 600;
+    transition: background-color 0.3s;
+}
+
+.btn-concluir:hover {
+    background: var(--neon-secondary);
+    box-shadow: 0 0 15px rgba(0, 255, 242, 0.2);
+}
+
+/* Estilo base para os botões de ação */
+.btn-verificar, .btn-concluir {
+    background: var(--neon-primary);
+    color: var(--darker-bg);
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 2rem;
+    font-weight: 600;
+    transition: background-color 0.3s;
+}
+
+.btn-verificar:hover, .btn-concluir:hover {
+    background: var(--neon-secondary);
+    box-shadow: 0 0 15px rgba(0, 255, 242, 0.2);
+}
+
+/* Remover qualquer transform herdado */
+.quiz-container .btn-verificar,
+.texto-container .btn-concluir {
+    transform: none !important;
+}
+
+.quiz-container .btn-verificar:hover,
+.texto-container .btn-concluir:hover {
+    transform: none !important;
+}
+
+/* Sobrescrever outros estilos que possam estar afetando os botões */
+button[class*="btn-"] {
+    transform: none !important;
+}
+
+button[class*="btn-"]:hover {
+    transform: none !important;
+}
+
+/* Garantir que não haja transformação em nenhum estado do botão */
+.btn-verificar,
+.btn-concluir,
+.btn-verificar:hover,
+.btn-concluir:hover,
+.btn-verificar:active,
+.btn-concluir:active,
+.btn-verificar:focus,
+.btn-concluir:focus {
+    transform: none !important;
+}
+
+/* Ajuste do posicionamento do botão VER RESPOSTA */
+.btn-verificar, .btn-concluir {
+    background: var(--neon-primary);
+    color: var(--darker-bg);
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 2rem;
+    margin-left: 2rem; /* Adicionado margem à esquerda */
+    font-weight: 600;
+    transition: background-color 0.3s;
+    transform: none !important;
+}
+
+/* Container do flashcard */
+.flashcard-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Alinha os itens à esquerda */
+    padding: 2rem;
+}
+
+/* Ajuste do container da questão */
+.question-container {
+    width: 100%;
+    text-align: left; /* Alinha o texto à esquerda */
+    margin-bottom: 2rem;
+}
+
+/* Ajuste do container do flashcard */
+.flashcard-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centraliza os itens horizontalmente */
+    padding: 2rem;
+    text-align: center;
+}
+
+/* Ajuste do container da questão */
+.question-container {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+/* Ajuste específico para o botão VER RESPOSTA */
+.btn-verificar, 
+.btn-concluir,
+.btn-ver-resposta {
+    background: var(--neon-primary);
+    color: var(--darker-bg);
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 2rem;
+    font-weight: 600;
+    transition: background-color 0.3s;
+    transform: none !important;
+    margin-left: 0; /* Remove a margem esquerda anterior */
+}
+
+/* Container para o botão VER RESPOSTA */
+.button-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+}
+
+/* Hover state */
+.btn-verificar:hover, 
+.btn-concluir:hover,
+.btn-ver-resposta:hover {
+    background: var(--neon-secondary);
+    box-shadow: 0 0 15px rgba(0, 255, 242, 0.2);
+}
+
+/* Estilo específico para o container do flashcard */
+.flashcard {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    width: 100%;
+    min-height: 300px;
+    background: var(--darker-bg);
+    border: 2px solid var(--neon-primary);
+    border-radius: 12px;
+    text-align: center;
+}
+
+/* Estilo para a questão do flashcard */
+.flashcard-question {
+    font-size: 1.2rem;
+    color: var(--light-text);
+    margin-bottom: 2rem;
+    line-height: 1.5;
+}
+
+/* Estilo do sidebar */
+.lessons-sidebar {
+    background: var(--darker-bg);
+    border-radius: 12px;
+    border: 1px solid var(--neon-primary);
+    padding: 1.5rem;
+    height: fit-content;
+}
+
+/* Título do conteúdo do curso */
+.lessons-sidebar h2 {
+    color: var(--neon-primary);
+    font-size: 1.2rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(0, 255, 242, 0.2);
+}
+
+/* Container das aulas */
+.lesson-item {
+    margin-bottom: 1rem;
+}
+
+/* Título da aula */
+.lesson-title {
+    color: var(--light-text);
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Duração da aula */
+.lesson-duration {
+    color: var(--neon-secondary);
+    font-size: 0.9rem;
+    margin-left: auto;
+}
+
+/* Container dos conteúdos */
+.lesson-contents {
+    margin-left: 1.5rem;
+    padding-left: 1rem;
+    border-left: 2px solid rgba(0, 255, 242, 0.1);
+}
+
+/* Item de conteúdo */
+.content-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    margin: 0.5rem 0;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 0.9rem;
+    color: var(--light-text);
+}
+
+/* Item de conteúdo bloqueado */
+.content-item.locked {
+    opacity: 0.5;
+    cursor: not-allowed;
+    color: var(--light-text);
+}
+
+/* Item de conteúdo desbloqueado hover */
+.content-item:not(.locked):hover {
+    background: rgba(0, 255, 242, 0.1);
+}
+
+/* Ícones dos itens */
+.content-icon {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--neon-primary);
+}
+
+/* Ícone de bloqueio */
+.lock-icon {
+    color: var(--neon-accent);
+    margin-left: auto;
+}
+
+/* Ícone de conclusão */
+.check-icon {
+    color: #00ff88;
+    margin-left: auto;
+}
+
+/* Item concluído */
+.content-item.completed {
+    background: rgba(0, 255, 136, 0.1);
+}
+
+/* Ajuste do layout principal */
+.course-content-wrapper {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+/* Responsividade */
+@media (max-width: 1024px) {
+    .course-content-wrapper {
+        grid-template-columns: 250px 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .course-content-wrapper {
+        grid-template-columns: 1fr;
+    }
+    
+    .lessons-sidebar {
+        margin-bottom: 2rem;
+    }
+}
+
+/* Layout do curso */
+.course-view {
+    display: none;
+    flex-direction: column;
+    gap: 2rem;
+    padding: 2rem;
+}
+
+.course-layout {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 2rem;
+}
+
+.breadcrumb {
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+}
+
+.breadcrumb a {
+    color: var(--neon-primary);
+    text-decoration: none;
+}
+
+.breadcrumb a:hover {
+    text-decoration: underline;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .course-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+.courses-area {
+    display: block;
+    padding: 2rem;
+}
+
+.course-view {
+    display: none;
+    padding: 2rem;
+}
+
+.course-content {
+    background: var(--darker-bg);
+    border-radius: 12px;
+    border: 1px solid var(--neon-primary);
+    padding: 2rem;
+}
+
+.course-header {
+    margin-bottom: 2rem;
+}
+
+.breadcrumb {
+    margin-bottom: 1rem;
+}
+
+.breadcrumb-link {
+    color: var(--neon-primary);
+    text-decoration: none;
+}
+
+.breadcrumb-link:hover {
+    text-decoration: underline;
+}
+
+.course-title {
+    color: var(--light-text);
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+/* Botões de navegação */
+.carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 255, 242, 0.05);
+    border: 1px solid rgba(0, 255, 242, 0.3);
+    color: #00FFF2;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.carousel-btn:hover {
+    background: rgba(0, 255, 242, 0.2);
+    border-color: rgba(0, 255, 242, 0.8);
+    box-shadow: 0 0 15px rgba(0, 255, 242, 0.3);
+    transform: translateY(-50%) scale(1.1);
+}
+
+.prev-btn {
+    left: 5%;
+}
+
+.next-btn {
+    right: 5%;
+}
+
+/* Ajuste do wrapper */
+.courses-carousel-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 1400px;
+    height: 350px;
+    margin: 0 auto;
+    perspective: 2000px;
+    overflow: visible;
+    padding: 20px 0; /* Removido o padding lateral */
+}
+
+/* Responsividade dos botões */
+@media (max-width: 1200px) {
+    .prev-btn {
+        left: 2%;
+    }
+    
+    .next-btn {
+        right: 2%;
+    }
+}
+
+@media (max-width: 768px) {
+    .carousel-btn {
+        width: 35px;
+        height: 35px;
+        font-size: 1.2rem;
+    }
+    
+    .prev-btn {
+        left: 0;
+    }
+    
+    .next-btn {
+        right: 0;
+    }
+}

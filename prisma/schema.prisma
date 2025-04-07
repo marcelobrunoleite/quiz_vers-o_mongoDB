@@ -1,0 +1,55 @@
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  email         String    @unique
+  password      String
+  role          String    @default("user")
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  testResults   TestResult[]
+  courses       Course[]
+}
+
+model Question {
+  id              String    @id @default(auto()) @map("_id") @db.ObjectId
+  tema            String
+  pergunta        String
+  alternativas    Json
+  resposta_correta String
+  explicacao      String
+  dificuldade     String
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  testResults     TestResult[]
+}
+
+model TestResult {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  userId      String    @db.ObjectId
+  questionId  String    @db.ObjectId
+  answer      String
+  correct     Boolean
+  createdAt   DateTime  @default(now())
+  user        User      @relation(fields: [userId], references: [id])
+  question    Question  @relation(fields: [questionId], references: [id])
+}
+
+model Course {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  description String
+  price       Float
+  authorId    String    @db.ObjectId
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  author      User      @relation(fields: [authorId], references: [id])
+} 

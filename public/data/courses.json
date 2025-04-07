@@ -1,0 +1,142 @@
+{
+    "courses": [
+        {
+            "id": "ctb-1",
+            "title": "Introdução ao CTB",
+            "description": "Técnicas essenciais para uma condução segura",
+            "thumbnail": "assets/images/courses/ctb.jpg",
+            "duration": "8 aulas 4h",
+            "lessons": [
+                {
+                    "id": "lesson-1",
+                    "title": "Introdução ao CTB",
+                    "duration": "15min",
+                    "conteudos": [
+                        {
+                            "id": "content-1",
+                            "tipo": "video",
+                            "titulo": "Aula Introdutória",
+                            "content": "https://www.youtube.com/watch?v=mfnmXfmQyYM"
+                        },
+                        {
+                            "id": "content-2",
+                            "tipo": "texto",
+                            "titulo": "O que é o CTB?",
+                            "content": "Conteúdo sobre o CTB..."
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "legislacao-1",
+            "title": "Legislação de Trânsito",
+            "description": "Aprenda as principais leis e regulamentações",
+            "thumbnail": "assets/images/courses/legislacao.jpg",
+            "duration": "10 aulas 5h",
+            "lessons": [
+                {
+                    "id": "lesson-1",
+                    "title": "Normas Gerais",
+                    "duration": "30min",
+                    "conteudos": [
+                        {
+                            "id": "content-1",
+                            "tipo": "video",
+                            "titulo": "Introdução às Leis de Trânsito",
+                            "content": "https://www.youtube.com/watch?v=VIDEO_ID"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "direcao-1",
+            "title": "Direção Defensiva",
+            "description": "Técnicas para uma direção mais segura",
+            "thumbnail": "assets/images/courses/direcao.jpg",
+            "duration": "6 aulas 3h",
+            "lessons": [
+                {
+                    "id": "lesson-1",
+                    "title": "Conceitos Básicos",
+                    "duration": "20min",
+                    "conteudos": [
+                        {
+                            "id": "content-1",
+                            "tipo": "video",
+                            "titulo": "O que é Direção Defensiva",
+                            "content": "https://www.youtube.com/watch?v=VIDEO_ID"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "primeiros-socorros-1",
+            "title": "Primeiros Socorros",
+            "description": "Aprenda procedimentos essenciais de primeiros socorros",
+            "thumbnail": "assets/images/courses/primeiros-socorros.jpg",
+            "duration": "5 aulas 2h30",
+            "lessons": [
+                {
+                    "id": "lesson-1",
+                    "title": "Noções Básicas",
+                    "duration": "25min",
+                    "conteudos": [
+                        {
+                            "id": "content-1",
+                            "tipo": "video",
+                            "titulo": "Introdução aos Primeiros Socorros",
+                            "content": "https://www.youtube.com/watch?v=VIDEO_ID"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "mecanica-1",
+            "title": "Mecânica Básica",
+            "description": "Entenda os principais componentes do veículo",
+            "thumbnail": "assets/images/courses/mecanica.jpg",
+            "duration": "7 aulas 3h30",
+            "lessons": [
+                {
+                    "id": "lesson-1",
+                    "title": "Funcionamento do Motor",
+                    "duration": "30min",
+                    "conteudos": [
+                        {
+                            "id": "content-1",
+                            "tipo": "video",
+                            "titulo": "Como funciona um motor",
+                            "content": "https://www.youtube.com/watch?v=VIDEO_ID"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "meio-ambiente-1",
+            "title": "Meio Ambiente e Trânsito",
+            "description": "Impacto ambiental e condução sustentável",
+            "thumbnail": "assets/images/courses/meio-ambiente.jpg",
+            "duration": "4 aulas 2h",
+            "lessons": [
+                {
+                    "id": "lesson-1",
+                    "title": "Sustentabilidade no Trânsito",
+                    "duration": "30min",
+                    "conteudos": [
+                        {
+                            "id": "content-1",
+                            "tipo": "video",
+                            "titulo": "Condução Ecológica",
+                            "content": "https://www.youtube.com/watch?v=VIDEO_ID"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+} 

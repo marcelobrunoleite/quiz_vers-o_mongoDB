@@ -71,7 +71,10 @@ class Auth {
                 phone,
                 whatsapp,
                 password: hashedPassword,
-                createdAt: new Date().toISOString()
+                role: 'user',
+                permissions: ['view_store', 'make_purchase'],
+                createdAt: new Date().toISOString(),
+                status: 'active'
             };
 
             this.users.push(newUser);
@@ -103,7 +106,12 @@ class Auth {
             
             if (user) {
                 const { password: _, ...userWithoutPassword } = user;
-                this.currentUser = userWithoutPassword;
+                this.currentUser = {
+                    ...userWithoutPassword,
+                    permissions: user.role === 'admin' ? 
+                        ROLES.ADMIN.permissions : 
+                        ROLES.USER.permissions
+                };
                 localStorage.setItem('currentUser', JSON.stringify(this.currentUser));
                 
                 this.updateAuthUI();
@@ -251,16 +259,25 @@ class Auth {
         const btnLogin = document.getElementById('btn-login');
         const btnSignup = document.getElementById('btn-signup');
         const userName = document.querySelector('.user-name');
+        const adminLink = document.querySelector('.admin-link');
 
         if (this.currentUser) {
             btnLogin.classList.add('escondido');
             btnSignup.classList.add('escondido');
             userInfo.classList.remove('escondido');
             userName.textContent = `Olá, ${this.currentUser.name}`;
+            
+            // Mostrar link de admin apenas para usuários administradores
+            if (this.currentUser.role === 'admin') {
+                adminLink?.classList.remove('escondido');
+            } else {
+                adminLink?.classList.add('escondido');
+            }
         } else {
             btnLogin.classList.remove('escondido');
             btnSignup.classList.remove('escondido');
             userInfo.classList.add('escondido');
+            adminLink?.classList.add('escondido');
         }
     }
 
@@ -270,6 +287,79 @@ class Auth {
         if (errorDiv) {
             errorDiv.textContent = message;
         }
+    }
+
+    updateUI() {
+        const userInfo = document.querySelector('.user-info');
+        const authButtons = document.querySelector('.auth-buttons');
+        const adminLink = document.querySelector('.admin-link');
+
+        if (this.currentUser) {
+            userInfo.querySelector('.user-name').textContent = this.currentUser.email;
+            userInfo.classList.remove('escondido');
+            authButtons.classList.add('escondido');
+            
+            // Mostrar link de admin apenas para usuários administradores
+            if (this.currentUser.role === 'admin') {
+                adminLink?.classList.remove('escondido');
+            } else {
+                adminLink?.classList.add('escondido');
+            }
+        } else {
+            userInfo.classList.add('escondido');
+            authButtons.classList.remove('escondido');
+            adminLink?.classList.add('escondido');
+        }
+    }
+
+    hasRole(role) {
+        return this.currentUser?.role === role;
+    }
+
+    hasPermission(permission) {
+        return this.currentUser?.permissions?.includes(permission);
+    }
+
+    checkAccess(requiredPermissions = []) {
+        // Admin tem acesso total
+        if (this.hasRole('admin')) return true;
+        
+        // Verifica se usuário tem todas as permissões necessárias
+        return requiredPermissions.every(perm => this.hasPermission(perm));
+    }
+
+    async updateUserPermissions(userId, newPermissions) {
+        if (!this.hasRole('admin')) {
+            throw new Error('Acesso negado');
+        }
+
+        const userToUpdate = this.users.find(u => u.id === userId);
+        if (!userToUpdate) {
+            throw new Error('Usuário não encontrado');
+        }
+
+        userToUpdate.permissions = newPermissions;
+        localStorage.setItem('users', JSON.stringify(this.users));
+    }
+
+    async createAdminUser(email, password) {
+        const hashedPassword = await this.hashPassword(password);
+        const adminUser = {
+            id: Date.now().toString(),
+            name: 'Administrador',
+            email,
+            phone: '',
+            whatsapp: '',
+            password: hashedPassword,
+            role: 'admin',
+            permissions: [...ROLES.ADMIN.permissions],
+            createdAt: new Date().toISOString(),
+            status: 'active'
+        };
+
+        this.users.push(adminUser);
+        localStorage.setItem('users', JSON.stringify(this.users));
+        return adminUser;
     }
 }
 

@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Placas - Quiz de Trânsito</title>
+    <title>Marketplace - Quiz de Trânsito</title>
     <link rel="stylesheet" href="styles.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
+    <!-- Header comum -->
     <header class="site-header">
         <div class="top-bar">
             <div class="container">
@@ -41,10 +41,10 @@
                         <a href="index.html" class="nav-link">Home</a>
                         <a href="quiz.html" class="nav-link">Quiz</a>
                         <a href="ranking.html" class="nav-link">Ranking</a>
-                        <a href="placas.html" class="nav-link active">Placas</a>
+                        <a href="placas.html" class="nav-link">Placas</a>
                         <a href="flashcards.html" class="nav-link">Flashcards</a>
                         <a href="courses.html" class="nav-link">Cursos</a>
-                        <a href="marketplace.html" class="nav-link">Loja</a>
+                        <a href="marketplace.html" class="nav-link active">Loja</a>
                         <a href="admin-marketplace.html" class="nav-link admin-link escondido">Admin</a>
                         <a href="sobre.html" class="nav-link">Sobre Nós</a>
                     </nav>
@@ -55,59 +55,65 @@
 
     <main class="site-main">
         <div class="container">
-            <section class="placas-section">
-                <h1 class="titulo-principal">Estudo de Placas de Trânsito</h1>
-                
-                <div class="filtros-container">
-                    <div class="filtros-principais">
-                        <button class="filtro-btn ativo" data-tipo="regulamentacao">Regulamentação</button>
-                        <button class="filtro-btn" data-tipo="advertencia">Advertência</button>
-                        <button class="filtro-btn" data-tipo="indicacao">Indicação</button>
+            <div class="marketplace-container">
+                <section class="products-section">
+                    <div class="marketplace-header">
+                        <h1>Produtos e Cursos</h1>
+                        <div class="marketplace-filters">
+                            <select id="categoryFilter" class="filter-select">
+                                <option value="">Todas Categorias</option>
+                                <option value="cursos">Cursos</option>
+                                <option value="materiais">Materiais</option>
+                                <option value="simulados">Simulados</option>
+                            </select>
+                            <div class="search-box">
+                                <input type="text" id="searchProducts" placeholder="Buscar produtos...">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="products-grid" id="productsGrid">
+                        <!-- Produtos serão inseridos via JavaScript -->
+                    </div>
+                </section>
+
+                <!-- Carrinho -->
+                <div class="floating-cart" id="floatingCart">
+                    <div class="cart-header">
+                        <h3>Carrinho <i class="fas fa-shopping-cart"></i></h3>
+                        <span class="cart-count">0</span>
+                    </div>
+                    <div class="cart-items">
+                        <!-- Itens do carrinho serão inseridos via JavaScript -->
+                    </div>
+                    <div class="cart-footer">
+                        <div class="cart-total">
+                            <span class="cart-total-label">Total:</span>
+                            <span class="cart-total-value">R$ <span id="cartTotal">0,00</span></span>
+                        </div>
+                        <button class="btn-checkout" id="btnCheckout">
+                            <i class="fas fa-lock"></i> Finalizar Compra
+                        </button>
                     </div>
                 </div>
-
-                <div class="pesquisa-container">
-                    <input type="text" id="pesquisa-placas" placeholder="Pesquisar placas..." class="pesquisa-input">
-                </div>
-
-                <div class="placas-grid">
-                    <!-- Placas serão inseridas aqui via JavaScript -->
-                </div>
-            </section>
+            </div>
         </div>
     </main>
 
-    <footer class="site-footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-info">
-                    <h3>Sobre o Quiz de Trânsito</h3>
-                    <p>Aplicativo desenvolvido para auxiliar no estudo para a prova teórica do DETRAN.</p>
-                </div>
-                <div class="footer-links">
-                    <h3>Links Úteis</h3>
-                    <ul>
-                        <li><a href="https://www.gov.br/prf/pt-br" target="_blank">Polícia Rodoviária Federal</a></li>
-                        <li><a href="https://www.detran.ms.gov.br/" target="_blank">DETRAN-MS</a></li>
-                        <li><a href="https://www.gov.br/infraestrutura/pt-br/assuntos/transito/arquivos-senatran/legislacao/contran" target="_blank">CONTRAN</a></li>
-                    </ul>
-                </div>
-                <div class="footer-contact">
-                    <h3>Contato</h3>
-                    <p>Em caso de dúvidas ou sugestões, entre em contato:</p>
-                    <a href="mailto:contato@quiztransito.com">contato@quiztransito.com</a>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2024 Quiz de Trânsito - Todos os direitos reservados</p>
+    <!-- Modal de Detalhes do Produto -->
+    <div id="productModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div class="product-details">
+                <!-- Detalhes do produto serão inseridos via JavaScript -->
             </div>
         </div>
-    </footer>
+    </div>
 
     <!-- Modal de Login -->
     <div id="login-modal" class="modal escondido">
         <div class="modal-content">
-            <span class="close-modal">&times;</span>
+            <span class="close-modal">×</span>
             <h2>Login</h2>
             <form id="login-form">
                 <div class="form-group">
@@ -118,17 +124,16 @@
                     <label>Senha</label>
                     <input type="password" id="login-password" required>
                 </div>
-                <div class="error-message"></div>
                 <button type="submit">Entrar</button>
                 <a href="#" class="forgot-password">Esqueceu a senha?</a>
             </form>
         </div>
     </div>
 
-    <!-- Modal de Signup -->
+    <!-- Modal de Cadastro -->
     <div id="signup-modal" class="modal escondido">
         <div class="modal-content">
-            <span class="close-modal">&times;</span>
+            <span class="close-modal">×</span>
             <h2>Criar Conta</h2>
             <form id="signup-form">
                 <div class="form-group">
@@ -155,16 +160,25 @@
                     <label>Confirmar senha</label>
                     <input type="password" id="signup-confirm-password" required>
                 </div>
-                <div class="error-message"></div>
                 <button type="submit">Criar conta</button>
             </form>
         </div>
     </div>
 
-    <!-- Scripts na ordem correta -->
-    <script src="js/permissions.js"></script>
+    <!-- Scripts -->
+    <script src="js/cart.js"></script>
+    <script src="js/payment.js"></script>
     <script src="js/auth.js"></script>
-    <script src="js/menu.js"></script>
-    <script src="js/placas.js"></script>
+    <script src="js/marketplace.js"></script>
+    <script>
+        // Garantir que todas as dependências estejam carregadas antes de inicializar
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof Cart !== 'undefined' && typeof PaymentService !== 'undefined') {
+                window.marketplace = new Marketplace();
+            } else {
+                console.error('Dependências não carregadas corretamente');
+            }
+        });
+    </script>
 </body>
 </html> 

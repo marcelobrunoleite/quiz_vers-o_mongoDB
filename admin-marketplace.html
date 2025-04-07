@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Marketplace</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="main-header">
+        <div class="container header-content">
+            <div class="logo">
+                <img src="assets/images/logo.png" alt="Logo Quiz Trânsito">
+                <h1 class="site-title">Painel Administrativo</h1>
+            </div>
+            <nav class="menu-principal">
+                <div class="nav-buttons">
+                    <a href="index.html" class="btn-logout">Voltar ao Site</a>
+                    <span class="user-name">Admin</span>
+                    <button id="btn-logout" class="btn-logout">Sair</button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="admin-main">
+        <div class="container">
+            <div class="admin-grid">
+                <!-- Menu lateral -->
+                <aside class="admin-sidebar">
+                    <nav class="admin-nav">
+                        <a href="#dashboard" class="nav-item active" data-view="dashboard">Dashboard</a>
+                        <a href="#produtos" class="nav-item" data-view="produtos">Produtos</a>
+                        <a href="#pedidos" class="nav-item" data-view="pedidos">Pedidos</a>
+                        <a href="#relatorios" class="nav-item" data-view="relatorios">Relatórios</a>
+                        <a href="#promocoes" class="nav-item" data-view="promocoes">Promoções</a>
+                    </nav>
+                </aside>
+
+                <!-- Conteúdo principal -->
+                <div class="admin-content">
+                    <!-- Dashboard -->
+                    <section id="dashboard" class="admin-section active">
+                        <h2>Dashboard</h2>
+                        <div class="dashboard-cards">
+                            <div class="dashboard-card">
+                                <h3>Vendas Hoje</h3>
+                                <div class="card-value">R$ <span id="vendasHoje">0,00</span></div>
+                            </div>
+                            <div class="dashboard-card">
+                                <h3>Pedidos Pendentes</h3>
+                                <div class="card-value"><span id="pedidosPendentes">0</span></div>
+                            </div>
+                            <div class="dashboard-card">
+                                <h3>Total de Produtos</h3>
+                                <div class="card-value"><span id="totalProdutos">0</span></div>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="vendasChart"></canvas>
+                        </div>
+                    </section>
+
+                    <!-- Produtos -->
+                    <section id="produtos" class="admin-section">
+                        <div class="section-header">
+                            <h2>Gerenciar Produtos</h2>
+                            <button onclick="window.adminMarketplace.showAddProductModal()" class="btn-primary">
+                                Novo Produto
+                            </button>
+                        </div>
+                        <div class="products-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Produto</th>
+                                        <th>Preço</th>
+                                        <th>Categoria</th>
+                                        <th>Status</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="productsList">
+                                    <!-- Preenchido via JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+
+                    <!-- Pedidos -->
+                    <section id="pedidos" class="admin-section">
+                        <h2>Pedidos</h2>
+                        <div class="orders-filters">
+                            <select id="orderStatus">
+                                <option value="">Todos os Status</option>
+                                <option value="pending">Pendentes</option>
+                                <option value="paid">Pagos</option>
+                                <option value="delivered">Entregues</option>
+                            </select>
+                        </div>
+                        <div class="orders-table">
+                            <!-- Tabela de pedidos -->
+                        </div>
+                    </section>
+
+                    <!-- Relatórios -->
+                    <section id="relatorios" class="admin-section">
+                        <h2>Relatórios</h2>
+                        <div class="reports-filters">
+                            <select id="reportType">
+                                <option value="sales">Vendas</option>
+                                <option value="products">Produtos</option>
+                                <option value="customers">Clientes</option>
+                            </select>
+                            <input type="date" id="startDate">
+                            <input type="date" id="endDate">
+                            <button data-permission="view_reports" onclick="adminMarketplace.generateReport()">Gerar Relatório</button>
+                        </div>
+                        <div data-permission="view_reports" id="reportContent">
+                            <!-- Conteúdo do relatório -->
+                        </div>
+                    </section>
+
+                    <!-- Promoções -->
+                    <section id="promocoes" class="admin-section">
+                        <div class="section-header">
+                            <h2>Promoções</h2>
+                            <button class="btn-primary btn-new-promotion" onclick="adminMarketplace.showAddPromotionModal()">
+                                <i class="fas fa-plus"></i>
+                                Nova Promoção
+                            </button>
+                        </div>
+                        <div class="promotions-grid">
+                            <!-- Lista de promoções -->
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal de Produto -->
+    <div id="productModal" class="modal escondido">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Adicionar/Editar Produto</h2>
+            <form id="productForm">
+                <div class="form-group">
+                    <label>Nome do Produto</label>
+                    <input type="text" id="productName" required>
+                </div>
+                <div class="form-group">
+                    <label>Descrição</label>
+                    <textarea id="productDescription" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Preço</label>
+                    <input type="number" id="productPrice" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label>Categoria</label>
+                    <select id="productCategory" required>
+                        <option value="cursos">Cursos</option>
+                        <option value="materiais">Materiais</option>
+                        <option value="simulados">Simulados</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Imagem</label>
+                    <input type="file" id="productImage" accept="image/*">
+                </div>
+                <button type="submit" class="btn-primary">Salvar</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de Promoção -->
+    <div id="promotionModal" class="modal escondido">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Adicionar/Editar Promoção</h2>
+            <form id="promotionForm">
+                <div class="form-group">
+                    <label>Nome da Promoção</label>
+                    <input type="text" id="promotionName" required>
+                </div>
+                <div class="form-group">
+                    <label>Descrição</label>
+                    <textarea id="promotionDescription" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Produto</label>
+                    <select id="promotionProduct" required>
+                        <!-- Preenchido via JavaScript -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Desconto (%)</label>
+                    <input type="number" id="promotionDiscount" min="0" max="100" required>
+                </div>
+                <div class="form-group">
+                    <label>Data Início</label>
+                    <input type="date" id="promotionStart" required>
+                </div>
+                <div class="form-group">
+                    <label>Data Fim</label>
+                    <input type="date" id="promotionEnd" required>
+                </div>
+                <button type="submit" class="btn-primary">Salvar</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/permissions.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/menu.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/admin-marketplace.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        if (!auth.checkAccess([PERMISSIONS.ADMIN.MANAGE_PRODUCTS])) {
+            window.location.href = '/';
+            return;
+        }
+        
+        // Esconder elementos baseado em permissões
+        document.querySelectorAll('[data-permission]').forEach(element => {
+            const permission = element.dataset.permission;
+            if (!auth.hasPermission(permission)) {
+                element.style.display = 'none';
+            }
+        });
+    });
+    </script>
+</body>
+</html> 
