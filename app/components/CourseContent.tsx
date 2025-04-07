@@ -69,6 +69,7 @@ const CourseContent: React.FC<CourseContentProps> = ({ sections }) => {
 
       <div className="md:col-span-2">
         <VideoPlayer
+        
           videoUrl={sections[currentSection].videoUrl}
           isLocked={isSectionLocked(currentSection)}
           onComplete={() => handleSectionComplete(sections[currentSection].id)}
