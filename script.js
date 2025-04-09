@@ -297,6 +297,12 @@ function exibirQuestao() {
         clearTimeout(timerQuestao);
     }
 
+    // Verificar se a questão atual é válida
+    if (indiceQuestaoAtual >= questoes.length) {
+        console.error('Questão atual não encontrada');
+        return;
+    }
+
     const questaoAtual = questoes[indiceQuestaoAtual];
     console.log('Questão atual:', questaoAtual);
     
@@ -405,6 +411,11 @@ function verificarResposta() {
     if (!respostaSelecionada) return;
 
     const questaoAtual = questoes[indiceQuestaoAtual];
+    if (!questaoAtual) {
+        console.error('Questão atual não encontrada');
+        return;
+    }
+
     const alternativas = document.querySelectorAll('.alternativa');
     const feedback = document.getElementById('feedback');
     const respostaFeedback = document.getElementById('resposta-feedback');

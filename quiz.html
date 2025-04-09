@@ -3,13 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Placas - Quiz de Trânsito</title>
+    <title>Quiz de Trânsito - Simulado</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: http: https:">
 </head>
 <body>
+    <!-- Header com Navegação -->
     <header class="site-header">
         <div class="top-bar">
             <div class="container">
@@ -39,9 +41,9 @@
                     </div>
                     <nav class="menu-principal">
                         <a href="index.html" class="nav-link">Home</a>
-                        <a href="quiz.html" class="nav-link">Quiz</a>
+                        <a href="quiz.html" class="nav-link active">Quiz</a>
                         <a href="ranking.html" class="nav-link">Ranking</a>
-                        <a href="placas.html" class="nav-link active">Placas</a>
+                        <a href="placas.html" class="nav-link">Placas</a>
                         <a href="flashcards.html" class="nav-link">Flashcards</a>
                         <a href="courses.html" class="nav-link">Cursos</a>
                         <a href="marketplace.html" class="nav-link">Loja</a>
@@ -53,30 +55,85 @@
         </div>
     </header>
 
-    <main class="site-main">
-        <div class="container">
-            <section class="placas-section">
-                <h1 class="titulo-principal">Estudo de Placas de Trânsito</h1>
-                
-                <div class="filtros-container">
-                    <div class="filtros-principais">
-                        <button class="filtro-btn ativo" data-tipo="regulamentacao">Regulamentação</button>
-                        <button class="filtro-btn" data-tipo="advertencia">Advertência</button>
-                        <button class="filtro-btn" data-tipo="indicacao">Indicação</button>
+    <!-- Conteúdo do Quiz -->
+    <main class="container">
+        <!-- Card de Seleção do Modo -->
+        <div id="modo-selecao" class="modo-card">
+            <h2>Escolha o Modo de Resposta</h2>
+            <div class="modo-opcoes">
+                <!-- Modo Padrão -->
+                <div class="modo-opcao" data-modo="padrao">
+                    <div class="modo-icon">📚</div>
+                    <h3>Modo Padrão</h3>
+                    <p>Simulado tradicional sem limite de tempo por questão</p>
+                </div>
+                <!-- Modo Desafio -->
+                <div class="modo-opcao" data-modo="desafio">
+                    <div class="modo-icon">⚡</div>
+                    <h3>Modo Desafio</h3>
+                    <p>30 segundos por questão com música de suspense</p>
+                </div>
+            </div>
+            
+            <!-- Opções de Feedback -->
+            <div class="feedback-opcoes">
+                <h3>Tipo de Feedback</h3>
+                <div class="modo-opcoes">
+                    <div class="modo-opcao feedback-opcao" data-feedback="imediato">
+                        <div class="modo-icon">✓</div>
+                        <h3>Ver resposta após cada questão</h3>
+                        <p>Receba feedback imediato após responder cada questão</p>
+                    </div>
+                    <div class="modo-opcao feedback-opcao" data-feedback="final">
+                        <div class="modo-icon">🎯</div>
+                        <h3>Ver respostas somente no final</h3>
+                        <p>Veja todas as respostas após completar o simulado</p>
                     </div>
                 </div>
+            </div>
+            
+            <button id="iniciar-simulado" class="btn-iniciar" disabled>Iniciar Simulado</button>
+        </div>
 
-                <div class="pesquisa-container">
-                    <input type="text" id="pesquisa-placas" placeholder="Pesquisar placas..." class="pesquisa-input">
-                </div>
+        <!-- Card do Quiz -->
+        <div id="quiz" class="quiz-card escondido">
+            <!-- Elemento de áudio para o modo desafio -->
+            <audio id="suspenseMusic" preload="auto" loop>
+                <source src="assets/audio/suspense.mp3" type="audio/mp3">
+            </audio>
+            
+            <div class="quiz-header">
+                <div id="progresso">Questão 1 de 30</div>
+                <div id="tempo">60:00</div>
+            </div>
 
-                <div class="placas-grid">
-                    <!-- Placas serão inseridas aqui via JavaScript -->
+            <div id="questao-container">
+                <div class="questao-header">
+                    <h3 id="pergunta"></h3>
+                    <span class="dificuldade"></span>
                 </div>
-            </section>
+                <div id="alternativas" class="alternativas-container">
+                    <!-- Alternativas serão inseridas via JavaScript -->
+                </div>
+            </div>
+
+            <button id="confirmar" class="btn-quiz" disabled>Confirmar Resposta</button>
+
+            <div id="feedback" class="escondido">
+                <div id="resposta-feedback" class="escondido">
+                    <div class="feedback-icon"></div>
+                    <p class="feedback-texto"></p>
+                </div>
+                <div class="explicacao-container">
+                    <h3>Explicação:</h3>
+                    <p id="explicacao"></p>
+                </div>
+                <button id="proxima" class="btn-quiz">Próxima Questão</button>
+            </div>
         </div>
     </main>
 
+    <!-- Footer -->
     <footer class="site-footer">
         <div class="container">
             <div class="footer-content">
@@ -88,7 +145,7 @@
                     <h3>Links Úteis</h3>
                     <ul>
                         <li><a href="https://www.gov.br/prf/pt-br" target="_blank">Polícia Rodoviária Federal</a></li>
-                        <li><a href="https://www.detran.ms.gov.br/" target="_blank">DETRAN-MS</a></li>
+                        <li><a href="https://www.gov.br/infraestrutura/pt-br/assuntos/transito/conteudo-denatran" target="_blank">DENATRAN</a></li>
                         <li><a href="https://www.gov.br/infraestrutura/pt-br/assuntos/transito/arquivos-senatran/legislacao/contran" target="_blank">CONTRAN</a></li>
                     </ul>
                 </div>
@@ -162,10 +219,9 @@
     </div>
 
     <!-- Scripts na ordem correta -->
-    <script src="shared.js"></script>
     <script src="js/permissions.js"></script>
     <script src="js/auth.js"></script>
     <script src="js/menu.js"></script>
-    <script src="js/placas.js"></script>
+    <script src="script.js"></script>
 </body>
 </html> 

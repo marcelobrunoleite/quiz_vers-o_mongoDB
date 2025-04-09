@@ -1,48 +1,52 @@
-# dependencies
-/node_modules
-/.pnp
-.pnp.js
+# Dependências
+node_modules/
+npm-debug.log
+yarn-debug.log
+yarn-error.log
 
-# testing
-/coverage
-
-# next.js
-/.next/
-/out/
-
-# production
-/build
-
-# misc
-.DS_Store
-*.pem
-
-# debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# local env files
+# Ambiente
 .env
-.env*.local
+.env.local
 .env.development
 .env.test
 .env.production
 
-# vercel
-.vercel
-
-# typescript
-*.tsbuildinfo
-next-env.d.ts
-
-# IDE
-.vscode/
-.idea/
+# Build
+dist/
+build/
+.next/
+out/
 
 # Logs
 logs/
 *.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Testes
+coverage/
 
 # Cache
-.cache/ 
+.cache/
+.temp/
+.tmp/
+
+# Arquivos de banco de dados
+*.sqlite
+*.sqlite3
+*.db
+
+# Arquivos de backup
+*.bak
+*.backup 

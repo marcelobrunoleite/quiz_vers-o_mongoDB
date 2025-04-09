@@ -5,6 +5,13 @@ class Auth {
         this.currentUser = JSON.parse(localStorage.getItem('currentUser')) || null;
         this.setupPhoneMasks();
         this.bindEvents();
+        
+        // Inicializar o estado de autenticação
+        if (this.currentUser) {
+            AuthState.updateUIForLoggedUser(this.currentUser);
+        } else {
+            AuthState.updateUIForLoggedOutUser();
+        }
     }
 
     setupPhoneMasks() {
@@ -114,7 +121,8 @@ class Auth {
                 };
                 localStorage.setItem('currentUser', JSON.stringify(this.currentUser));
                 
-                this.updateAuthUI();
+                // Atualizar UI usando AuthState
+                AuthState.updateUIForLoggedUser(this.currentUser);
                 this.closeModal(document.getElementById('login-modal'));
                 this.showNotification(`Bem-vindo, ${this.currentUser.name}!`, 'success');
             } else {
@@ -246,11 +254,11 @@ class Auth {
     }
 
     handleLogout() {
-        const userName = this.currentUser?.name;
         this.currentUser = null;
         localStorage.removeItem('currentUser');
-        this.updateAuthUI();
-        this.showNotification(`Até logo, ${userName}!`);
+        // Atualizar UI usando AuthState
+        AuthState.updateUIForLoggedOutUser();
+        this.showNotification('Logout realizado com sucesso!', 'success');
     }
 
     updateAuthUI() {
@@ -374,4 +382,79 @@ if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initAuth);
 } else {
     initAuth();
-} 
+}
+
+// Elementos do DOM
+const signupModal = document.getElementById('signup-modal');
+const signupForm = document.getElementById('signup-form');
+const btnSignup = document.getElementById('btn-signup');
+const closeButtons = document.querySelectorAll('.close-modal');
+
+// Event Listeners
+btnSignup.addEventListener('click', () => {
+    signupModal.classList.remove('escondido');
+});
+
+closeButtons.forEach(button => {
+    button.addEventListener('click', () => {
+        signupModal.classList.add('escondido');
+    });
+});
+
+signupForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const name = document.getElementById('signup-name').value;
+    const email = document.getElementById('signup-email').value;
+    const phone = document.getElementById('signup-phone').value;
+    const whatsapp = document.getElementById('signup-whatsapp').value;
+    const password = document.getElementById('signup-password').value;
+    const confirmPassword = document.getElementById('signup-confirm-password').value;
+    const errorMessage = signupForm.querySelector('.error-message');
+
+    // Validar senha
+    if (password !== confirmPassword) {
+        errorMessage.textContent = 'As senhas não coincidem';
+        return;
+    }
+
+    try {
+        const response = await fetch('http://localhost:3000/api/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                name,
+                email,
+                password,
+                phone,
+                whatsapp
+            })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            // Sucesso no registro
+            errorMessage.textContent = '';
+            errorMessage.style.color = 'green';
+            errorMessage.textContent = 'Conta criada com sucesso!';
+            
+            // Limpar formulário
+            signupForm.reset();
+            
+            // Fechar modal após 2 segundos
+            setTimeout(() => {
+                signupModal.classList.add('escondido');
+            }, 2000);
+        } else {
+            // Erro no registro
+            errorMessage.style.color = 'red';
+            errorMessage.textContent = data.error || 'Erro ao criar conta';
+        }
+    } catch (error) {
+        errorMessage.style.color = 'red';
+        errorMessage.textContent = 'Erro ao conectar com o servidor';
+    }
+}); 
