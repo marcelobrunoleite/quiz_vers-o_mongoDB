@@ -33,12 +33,16 @@ const prisma = new PrismaClient({
 async function connectDB(retries = 5) {
     while (retries > 0) {
         try {
+            console.log('Tentando conectar ao banco de dados...');
+            console.log('DATABASE_URL está definida:', !!process.env.DATABASE_URL);
+            
             await prisma.$connect();
-            logger.info('✅ Conectado ao banco de dados com sucesso!');
+            console.log('✅ Conectado ao banco de dados com sucesso!');
             return true;
         } catch (error) {
             retries--;
-            logger.error(`❌ Erro ao conectar ao banco de dados. Tentativas restantes: ${retries}`, error);
+            console.error(`❌ Erro ao conectar ao banco de dados. Tentativas restantes: ${retries}`, error);
+            
             if (retries === 0) {
                 throw error;
             }
@@ -59,9 +63,7 @@ app.use(helmet({
 
 // Configuração do CORS
 app.use(cors({
-    origin: process.env.NODE_ENV === 'production' 
-        ? [process.env.VERCEL_URL, 'https://aplicativo-v7-loja-6a48.vercel.app'] 
-        : '*',
+    origin: '*',  // Permitir todas as origens temporariamente para debug
     credentials: true
 }));
 
@@ -71,9 +73,22 @@ app.use(async (req, res, next) => {
         await prisma.$queryRaw`SELECT 1`;
         next();
     } catch (error) {
-        logger.error('Erro na conexão com o banco:', error);
-        await connectDB(); // Tentar reconectar
-        next(error);
+        console.error('Erro na conexão com o banco:', {
+            error: error.message,
+            stack: error.stack,
+            databaseUrl: process.env.DATABASE_URL ? 'Configurada' : 'Não configurada'
+        });
+        
+        try {
+            await connectDB();
+            next();
+        } catch (reconnectError) {
+            console.error('Falha na reconexão:', reconnectError);
+            res.status(500).json({ 
+                error: 'Erro de conexão com o banco de dados',
+                details: process.env.NODE_ENV === 'development' ? reconnectError.message : undefined
+            });
+        }
     }
 });
 
@@ -120,14 +135,14 @@ const authenticateToken = (req, res, next) => {
 // Rotas da API
 app.post('/api/register', async (req, res) => {
     try {
-        const { name, email, password, phone, whatsapp } = req.body;
+        console.log('Recebida requisição de registro:', req.body);
         
-        // Validações
+        const { name, email, password } = req.body;
+        
         if (!name || !email || !password) {
             return res.status(400).json({ error: 'Campos obrigatórios não preenchidos' });
         }
 
-        // Verificar se o email já existe
         const existingUser = await prisma.user.findUnique({
             where: { email }
         });
@@ -136,27 +151,24 @@ app.post('/api/register', async (req, res) => {
             return res.status(400).json({ error: 'Email já cadastrado' });
         }
 
-        // Criptografar senha
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        // Criar usuário
         const user = await prisma.user.create({
             data: {
                 name,
                 email,
                 password: hashedPassword,
-                phone,
-                whatsapp: whatsapp || phone,
                 role: 'user'
             }
         });
 
-        // Gerar token JWT
         const token = jwt.sign(
-            { userId: user.id, email: user.email, role: user.role },
+            { userId: user.id, email: user.email },
             process.env.JWT_SECRET,
             { expiresIn: '24h' }
         );
+
+        console.log('Usuário criado com sucesso:', { id: user.id, email: user.email });
 
         res.status(201).json({
             message: 'Usuário criado com sucesso',
@@ -164,13 +176,15 @@ app.post('/api/register', async (req, res) => {
             user: {
                 id: user.id,
                 name: user.name,
-                email: user.email,
-                role: user.role
+                email: user.email
             }
         });
     } catch (error) {
-        logger.error('Erro no registro:', error);
-        res.status(500).json({ error: 'Erro ao criar usuário' });
+        console.error('Erro no registro:', error);
+        res.status(500).json({ 
+            error: 'Erro ao criar usuário',
+            details: process.env.NODE_ENV === 'development' ? error.message : undefined
+        });
     }
 });
 
@@ -277,28 +291,32 @@ process.on('beforeExit', async () => {
 });
 
 // Tratamento de erros não capturados
-process.on('unhandledRejection', (reason, promise) => {
-    logger.error('Unhandled Rejection at:', {
-        promise: promise,
-        reason: reason
-    });
+process.on('unhandledRejection', (error) => {
+    console.error('Erro não tratado (Promise):', error);
 });
 
 process.on('uncaughtException', (error) => {
-    logger.error('Uncaught Exception:', error);
+    console.error('Erro não tratado:', error);
     process.exit(1);
 });
 
-// Inicialização do servidor com retry na conexão do banco
+// Inicialização do servidor
 const PORT = process.env.PORT || 3000;
-(async () => {
+
+async function startServer() {
     try {
+        console.log('Iniciando servidor...');
+        console.log('Ambiente:', process.env.NODE_ENV);
+        
         await connectDB();
+        
         app.listen(PORT, () => {
-            logger.info(`Servidor rodando na porta ${PORT}`);
+            console.log(`✅ Servidor rodando na porta ${PORT}`);
         });
     } catch (error) {
-        logger.error('Erro fatal ao iniciar o servidor:', error);
+        console.error('❌ Erro fatal ao iniciar servidor:', error);
         process.exit(1);
     }
-})(); 
+}
+
+startServer(); 
