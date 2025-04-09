@@ -1,12 +1,11 @@
 const express = require('express');
+const path = require('path');
 const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const compression = require('compression');
 const morgan = require('morgan');
 const winston = require('winston');
-const path = require('path');
-const fs = require('fs');
 const { PrismaClient } = require('@prisma/client');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -31,16 +30,20 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 // Middleware de segurança
-app.use(helmet());
+app.use(helmet({
+    contentSecurityPolicy: false,
+    crossOriginEmbedderPolicy: false
+}));
+
 app.use(cors({
-    origin: process.env.NODE_ENV === 'production' ? 'https://seu-dominio.com' : '*',
+    origin: process.env.NODE_ENV === 'production' ? process.env.VERCEL_URL : '*',
     credentials: true
 }));
 
 // Limite de requisições
 const limiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutos
-    max: 100 // limite de 100 requisições por IP
+    windowMs: 15 * 60 * 1000,
+    max: 100
 });
 app.use(limiter);
 
@@ -48,12 +51,16 @@ app.use(limiter);
 app.use(compression());
 
 // Logs de acesso
-app.use(morgan('combined', {
-    stream: fs.createWriteStream(path.join(__dirname, 'access.log'), { flags: 'a' })
-}));
+if (process.env.NODE_ENV !== 'production') {
+    app.use(morgan('combined'));
+}
 
 // Middleware para parsear JSON
 app.use(express.json());
+
+// Servir arquivos estáticos
+app.use(express.static(path.join(__dirname, 'public')));
+app.use('/dist', express.static(path.join(__dirname, 'dist')));
 
 // Middleware de autenticação
 const authenticateToken = (req, res, next) => {
@@ -192,6 +199,21 @@ app.get('/api/profile', authenticateToken, async (req, res) => {
         logger.error('Erro ao buscar perfil:', error);
         res.status(500).json({ error: 'Erro ao buscar perfil' });
     }
+});
+
+app.get('/api/questions', async (req, res) => {
+    try {
+        const questions = await prisma.question.findMany();
+        res.json(questions);
+    } catch (error) {
+        logger.error('Erro ao buscar questões:', error);
+        res.status(500).json({ error: 'Erro ao buscar questões' });
+    }
+});
+
+// Rota para servir o arquivo HTML principal
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 // Tratamento de erros
