@@ -10,7 +10,24 @@ const { PrismaClient } = require('@prisma/client');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
+// Inicialização do Prisma com retry
 const prisma = new PrismaClient();
+
+// Função para conectar ao banco de dados com retry
+async function connectDB() {
+    try {
+        await prisma.$connect();
+        console.log('✅ Conectado ao banco de dados com sucesso!');
+    } catch (error) {
+        console.error('❌ Erro ao conectar ao banco de dados:', error);
+        // Tentar reconectar em 5 segundos
+        setTimeout(connectDB, 5000);
+    }
+}
+
+// Conectar ao banco de dados
+connectDB();
+
 const app = express();
 
 // Configuração de logs
@@ -79,6 +96,17 @@ const authenticateToken = (req, res, next) => {
         next();
     });
 };
+
+// Middleware para verificar conexão com o banco
+app.use(async (req, res, next) => {
+    try {
+        await prisma.$queryRaw`SELECT 1`;
+        next();
+    } catch (error) {
+        console.error('Erro na conexão com o banco:', error);
+        res.status(500).json({ error: 'Erro de conexão com o banco de dados' });
+    }
+});
 
 // Rotas da API
 app.post('/api/register', async (req, res) => {
@@ -216,10 +244,24 @@ app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-// Tratamento de erros
+// Tratamento de erros melhorado
 app.use((err, req, res, next) => {
-    logger.error('Erro não tratado:', err);
-    res.status(500).json({ error: 'Erro interno do servidor' });
+    console.error('Erro não tratado:', err);
+    logger.error('Erro não tratado:', {
+        error: err.message,
+        stack: err.stack,
+        path: req.path,
+        method: req.method
+    });
+    res.status(500).json({ 
+        error: 'Erro interno do servidor',
+        message: process.env.NODE_ENV === 'development' ? err.message : undefined
+    });
+});
+
+// Cleanup do Prisma quando o servidor for fechado
+process.on('beforeExit', async () => {
+    await prisma.$disconnect();
 });
 
 // Iniciar servidor
