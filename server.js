@@ -10,41 +10,46 @@ const { PrismaClient } = require('@prisma/client');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-// Inicialização do Prisma com retry
-const prisma = new PrismaClient();
-
-// Função para conectar ao banco de dados com retry
-async function connectDB() {
-    try {
-        await prisma.$connect();
-        console.log('✅ Conectado ao banco de dados com sucesso!');
-    } catch (error) {
-        console.error('❌ Erro ao conectar ao banco de dados:', error);
-        // Tentar reconectar em 5 segundos
-        setTimeout(connectDB, 5000);
-    }
-}
-
-// Conectar ao banco de dados
-connectDB();
-
-const app = express();
-
-// Configuração de logs
+// Configuração do Winston para logs
 const logger = winston.createLogger({
     level: 'info',
-    format: winston.format.json(),
+    format: winston.format.combine(
+        winston.format.timestamp(),
+        winston.format.json()
+    ),
     transports: [
-        new winston.transports.File({ filename: 'error.log', level: 'error' }),
-        new winston.transports.File({ filename: 'combined.log' })
+        new winston.transports.Console({
+            format: winston.format.simple()
+        })
     ]
 });
 
-if (process.env.NODE_ENV !== 'production') {
-    logger.add(new winston.transports.Console({
-        format: winston.format.simple()
-    }));
+// Inicialização do Prisma com retry e logs
+const prisma = new PrismaClient({
+    log: ['query', 'info', 'warn', 'error'],
+});
+
+// Função para conectar ao banco de dados com retry
+async function connectDB(retries = 5) {
+    while (retries > 0) {
+        try {
+            await prisma.$connect();
+            logger.info('✅ Conectado ao banco de dados com sucesso!');
+            return true;
+        } catch (error) {
+            retries--;
+            logger.error(`❌ Erro ao conectar ao banco de dados. Tentativas restantes: ${retries}`, error);
+            if (retries === 0) {
+                throw error;
+            }
+            // Esperar 5 segundos antes de tentar novamente
+            await new Promise(resolve => setTimeout(resolve, 5000));
+        }
+    }
+    return false;
 }
+
+const app = express();
 
 // Middleware de segurança
 app.use(helmet({
@@ -52,10 +57,25 @@ app.use(helmet({
     crossOriginEmbedderPolicy: false
 }));
 
+// Configuração do CORS
 app.use(cors({
-    origin: process.env.NODE_ENV === 'production' ? process.env.VERCEL_URL : '*',
+    origin: process.env.NODE_ENV === 'production' 
+        ? [process.env.VERCEL_URL, 'https://aplicativo-v7-loja-6a48.vercel.app'] 
+        : '*',
     credentials: true
 }));
+
+// Middleware para verificar a conexão com o banco antes de cada requisição
+app.use(async (req, res, next) => {
+    try {
+        await prisma.$queryRaw`SELECT 1`;
+        next();
+    } catch (error) {
+        logger.error('Erro na conexão com o banco:', error);
+        await connectDB(); // Tentar reconectar
+        next(error);
+    }
+});
 
 // Limite de requisições
 const limiter = rateLimit({
@@ -96,17 +116,6 @@ const authenticateToken = (req, res, next) => {
         next();
     });
 };
-
-// Middleware para verificar conexão com o banco
-app.use(async (req, res, next) => {
-    try {
-        await prisma.$queryRaw`SELECT 1`;
-        next();
-    } catch (error) {
-        console.error('Erro na conexão com o banco:', error);
-        res.status(500).json({ error: 'Erro de conexão com o banco de dados' });
-    }
-});
 
 // Rotas da API
 app.post('/api/register', async (req, res) => {
@@ -246,16 +255,19 @@ app.get('*', (req, res) => {
 
 // Tratamento de erros melhorado
 app.use((err, req, res, next) => {
-    console.error('Erro não tratado:', err);
     logger.error('Erro não tratado:', {
         error: err.message,
         stack: err.stack,
         path: req.path,
-        method: req.method
+        method: req.method,
+        query: req.query,
+        body: req.body
     });
-    res.status(500).json({ 
+
+    res.status(500).json({
         error: 'Erro interno do servidor',
-        message: process.env.NODE_ENV === 'development' ? err.message : undefined
+        message: process.env.NODE_ENV === 'development' ? err.message : 'Um erro ocorreu no servidor',
+        code: err.code
     });
 });
 
@@ -264,8 +276,29 @@ process.on('beforeExit', async () => {
     await prisma.$disconnect();
 });
 
-// Iniciar servidor
+// Tratamento de erros não capturados
+process.on('unhandledRejection', (reason, promise) => {
+    logger.error('Unhandled Rejection at:', {
+        promise: promise,
+        reason: reason
+    });
+});
+
+process.on('uncaughtException', (error) => {
+    logger.error('Uncaught Exception:', error);
+    process.exit(1);
+});
+
+// Inicialização do servidor com retry na conexão do banco
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    logger.info(`Servidor rodando na porta ${PORT}`);
-}); 
+(async () => {
+    try {
+        await connectDB();
+        app.listen(PORT, () => {
+            logger.info(`Servidor rodando na porta ${PORT}`);
+        });
+    } catch (error) {
+        logger.error('Erro fatal ao iniciar o servidor:', error);
+        process.exit(1);
+    }
+})(); 
