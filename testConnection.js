@@ -1,23 +1,18 @@
-require('dotenv').config();
-const { MongoClient } = require('mongodb');
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient();
 
 async function testConnection() {
-    const uri = process.env.DATABASE_URL;
-    const client = new MongoClient(uri);
-
     try {
-        await client.connect();
-        console.log('✅ Conexão com o MongoDB estabelecida com sucesso!');
+        await prisma.$connect();
+        console.log('✅ Conexão com o banco de dados estabelecida com sucesso!');
         
-        // Listar os bancos de dados disponíveis
-        const databases = await client.db().admin().listDatabases();
-        console.log('\n📦 Bancos de dados disponíveis:');
-        databases.databases.forEach(db => console.log(`- ${db.name}`));
+        const userCount = await prisma.user.count();
+        console.log(`Total de usuários no banco: ${userCount}`);
         
     } catch (error) {
-        console.error('❌ Erro ao conectar ao MongoDB:', error.message);
+        console.error('❌ Erro ao conectar ao banco de dados:', error);
     } finally {
-        await client.close();
+        await prisma.$disconnect();
     }
 }
 
