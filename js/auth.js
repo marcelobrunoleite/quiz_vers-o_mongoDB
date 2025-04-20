@@ -6,7 +6,6 @@ class Auth {
         this.users = JSON.parse(localStorage.getItem('users')) || [];
         this.currentUser = JSON.parse(localStorage.getItem('currentUser')) || null;
         this.setupEventListeners();
-        this.bindEvents();
     }
 
     initializeAdminUser() {
@@ -28,14 +27,36 @@ class Auth {
     }
 
     setupEventListeners() {
-        // Botões de login/signup
+        console.log('Configurando event listeners...');
+        
+        // Botões de login/signup/logout
         const btnLogin = document.getElementById('btn-login');
         const btnSignup = document.getElementById('btn-signup');
         const btnLogout = document.getElementById('btn-logout');
 
-        if (btnLogin) btnLogin.addEventListener('click', () => this.showLoginModal());
-        if (btnSignup) btnSignup.addEventListener('click', () => this.showSignupModal());
-        if (btnLogout) btnLogout.addEventListener('click', () => this.logout());
+        if (btnLogin) {
+            btnLogin.addEventListener('click', () => {
+                console.log('Clique no botão login');
+                this.showLoginModal();
+            });
+        }
+
+        if (btnSignup) {
+            btnSignup.addEventListener('click', () => {
+                console.log('Clique no botão signup');
+                this.showSignupModal();
+            });
+        }
+
+        if (btnLogout) {
+            console.log('Botão de logout encontrado, vinculando evento');
+            btnLogout.addEventListener('click', () => {
+                console.log('Clique no botão logout');
+                this.logout();
+            });
+        } else {
+            console.log('Botão de logout não encontrado');
+        }
 
         // Forms de login/signup
         const loginForm = document.getElementById('login-form');
@@ -107,29 +128,38 @@ class Auth {
     }
 
     bindEvents() {
-        // Fechar modal ao clicar no X
-        document.querySelectorAll('.close-modal').forEach(closeBtn => {
-            closeBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                const modal = closeBtn.closest('.modal');
+        console.log('Vinculando eventos...');
+        
+        // Vincular eventos de formulário
+        const loginForm = document.getElementById('login-form');
+        if (loginForm) {
+            console.log('Form de login encontrado, vinculando evento submit');
+            loginForm.addEventListener('submit', (e) => this.handleLogin(e));
+        }
+
+        // Vincular eventos de clique
+        document.addEventListener('click', (e) => {
+            const target = e.target;
+            
+            if (target.id === 'btn-login') {
+                console.log('Clique no botão login');
+                this.showModal('login-modal');
+            }
+            
+            if (target.id === 'btn-signup') {
+                console.log('Clique no botão signup');
+                this.showModal('signup-modal');
+            }
+            
+            if (target.id === 'btn-logout') {
+                console.log('Clique no botão logout');
+                this.logout();
+            }
+            
+            if (target.classList.contains('close-modal')) {
+                const modal = target.closest('.modal');
                 this.closeModal(modal);
-            });
-        });
-
-        // Fechar modal ao clicar fora
-        document.querySelectorAll('.modal').forEach(modal => {
-            modal.addEventListener('click', (e) => {
-                if (e.target === modal) {
-                    this.closeModal(modal);
-                }
-            });
-        });
-
-        // Prevenir fechamento ao clicar dentro do modal
-        document.querySelectorAll('.modal-content').forEach(content => {
-            content.addEventListener('click', (e) => {
-                e.stopPropagation();
-            });
+            }
         });
     }
 
@@ -209,10 +239,29 @@ class Auth {
     }
 
     logout() {
+        console.log('Realizando logout...');
+        // Limpar dados do localStorage
         localStorage.removeItem('currentUser');
+        localStorage.removeItem('users');
+        
+        // Limpar estado da classe
         this.currentUser = null;
-        this.updateAuthUI();
-        window.location.reload();
+        
+        // Atualizar UI
+        const authButtons = document.querySelector('.auth-buttons');
+        const userInfo = document.querySelector('.user-info');
+        const btnLogin = document.getElementById('btn-login');
+        const btnSignup = document.getElementById('btn-signup');
+        const adminLink = document.querySelector('.admin-link');
+
+        if (authButtons) authButtons.classList.remove('escondido');
+        if (userInfo) userInfo.classList.add('escondido');
+        if (btnLogin) btnLogin.style.display = 'block';
+        if (btnSignup) btnSignup.style.display = 'block';
+        if (adminLink) adminLink.classList.add('escondido');
+
+        console.log('Redirecionando para a página inicial...');
+        window.location.href = 'index.html';
     }
 
     checkAdminAccess() {

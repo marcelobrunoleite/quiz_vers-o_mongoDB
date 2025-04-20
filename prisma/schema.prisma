@@ -12,11 +12,14 @@ model User {
   name          String
   email         String    @unique
   password      String
+  phone         String?
+  whatsapp      String?
   role          String    @default("user")
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   testResults   TestResult[]
   courses       Course[]
+  quizResults   QuizResult[]
 }
 
 model Question {
@@ -30,6 +33,9 @@ model Question {
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
   testResults     TestResult[]
+  options         String[]
+  answer          Int
+  explanation     String?
 }
 
 model TestResult {
@@ -52,4 +58,18 @@ model Course {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   author      User      @relation(fields: [authorId], references: [id])
+}
+
+model QuizResult {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId        String   @db.ObjectId
+  score         Int
+  correctAnswers Int
+  wrongAnswers  Int
+  timeSpent     Int     // tempo em segundos
+  completedAt   DateTime
+  user          User    @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([score])
 } 

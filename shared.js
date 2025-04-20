@@ -1,14 +1,15 @@
 // Gerenciamento de estado global
-const AuthState = {
+export const AuthState = {
     init() {
         this.checkAuthState();
         this.setupAuthListeners();
     },
 
     checkAuthState() {
-        const currentUser = localStorage.getItem('currentUser');
-        if (currentUser) {
-            this.updateUIForLoggedUser(JSON.parse(currentUser));
+        const token = localStorage.getItem('token');
+        const user = localStorage.getItem('user');
+        if (token && user) {
+            this.updateUIForLoggedUser(JSON.parse(user));
         } else {
             this.updateUIForLoggedOutUser();
         }
@@ -56,9 +57,11 @@ const AuthState = {
 
     setupAuthListeners() {
         window.addEventListener('storage', (e) => {
-            if (e.key === 'currentUser') {
-                if (e.newValue) {
-                    this.updateUIForLoggedUser(JSON.parse(e.newValue));
+            if (e.key === 'token' || e.key === 'user') {
+                const token = localStorage.getItem('token');
+                const user = localStorage.getItem('user');
+                if (token && user) {
+                    this.updateUIForLoggedUser(JSON.parse(user));
                 } else {
                     this.updateUIForLoggedOutUser();
                 }

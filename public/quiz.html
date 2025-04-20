@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz de Trânsito - Simulado</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/css/quiz.css">
+</head>
+<body>
+    <!-- Header comum a todas as páginas -->
+    <header class="site-header">
+        <!-- O conteúdo será injetado pelo componente Header.js -->
+    </header>
+
+    <!-- Modais de autenticação (reusados do template) -->
+    <div id="loginModal" class="modal escondido">
+        <!-- Conteúdo do modal de login -->
+    </div>
+
+    <div id="signupModal" class="modal escondido">
+        <!-- Conteúdo do modal de cadastro -->
+    </div>
+
+    <!-- Conteúdo específico da página de quiz -->
+    <main id="page-content">
+        <div class="quiz-container">
+            <h1>Escolha o Modo de Resposta</h1>
+            
+            <div class="modo-opcoes">
+                <div class="modo-opcao" onclick="quizApp.selecionarModo('padrao')">
+                    <div class="modo-icon">🎯</div>
+                    <h3>Modo Padrão</h3>
+                    <p>Simulado tradicional sem limite de tempo por questão</p>
+                </div>
+
+                <div class="modo-opcao" onclick="quizApp.selecionarModo('desafio')">
+                    <div class="modo-icon">⚡</div>
+                    <h3>Modo Desafio</h3>
+                    <p>30 segundos por questão com música de suspense</p>
+                </div>
+            </div>
+
+            <div class="feedback-opcoes">
+                <h2>Tipo de Feedback</h2>
+                
+                <div class="feedback-opcao" onclick="quizApp.selecionarFeedback('imediato')">
+                    <div class="feedback-icon">✓</div>
+                    <h3>Ver resposta após cada questão</h3>
+                    <p>Receba feedback imediato após responder cada questão</p>
+                </div>
+
+                <div class="feedback-opcao" onclick="quizApp.selecionarFeedback('final')">
+                    <div class="feedback-icon">🎯</div>
+                    <h3>Ver respostas somente no final</h3>
+                    <p>Veja todas as respostas após completar o simulado</p>
+                </div>
+            </div>
+
+            <button id="iniciar-simulado" class="btn-iniciar" disabled>
+                Iniciar Simulado
+            </button>
+        </div>
+    </main>
+
+    <!-- Scripts comuns -->
+    <script type="module" src="/src/frontend/main.js"></script>
+    <!-- Script específico da página de quiz -->
+    <script type="module" src="/src/frontend/pages/quiz.js"></script>
+</body>
+</html> 

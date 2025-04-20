@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz de Trânsito</title>
+    <link rel="stylesheet" href="/styles.css">
+    <!-- Adicione aqui outros estilos específicos da página -->
+</head>
+<body>
+    <!-- Header comum a todas as páginas -->
+    <header class="site-header">
+        <!-- O conteúdo será injetado pelo componente Header.js -->
+    </header>
+
+    <!-- Modais de autenticação -->
+    <div id="loginModal" class="modal escondido">
+        <div class="modal-content">
+            <button class="close-modal" onclick="this.parentElement.parentElement.classList.add('escondido')">&times;</button>
+            <h2>Login</h2>
+            <form id="loginForm" onsubmit="return false;">
+                <div class="form-group">
+                    <label for="login-email">Email</label>
+                    <input type="email" id="login-email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Senha</label>
+                    <input type="password" id="login-password" name="password" required>
+                </div>
+                <button type="submit" class="btn-submit">Entrar</button>
+            </form>
+            <p>Não tem uma conta? <a href="#" onclick="header.showSignupModal(); return false;">Cadastre-se</a></p>
+        </div>
+    </div>
+
+    <div id="signupModal" class="modal escondido">
+        <div class="modal-content">
+            <button class="close-modal" onclick="this.parentElement.parentElement.classList.add('escondido')">&times;</button>
+            <h2>Cadastro</h2>
+            <form id="signupForm" onsubmit="return false;">
+                <div class="form-group">
+                    <label for="signup-name">Nome</label>
+                    <input type="text" id="signup-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="signup-email">Email</label>
+                    <input type="email" id="signup-email" required>
+                </div>
+                <div class="form-group">
+                    <label for="signup-password">Senha</label>
+                    <input type="password" id="signup-password" required>
+                </div>
+                <div class="form-group">
+                    <label for="signup-phone">Telefone</label>
+                    <input type="tel" id="signup-phone">
+                </div>
+                <button type="submit" class="btn-submit">Cadastrar</button>
+            </form>
+            <p>Já tem uma conta? <a href="#" onclick="header.showLoginModal(); return false;">Faça login</a></p>
+        </div>
+    </div>
+
+    <!-- Conteúdo específico da página -->
+    <main id="page-content">
+        <!-- O conteúdo específico de cada página será injetado aqui -->
+    </main>
+
+    <!-- Scripts comuns -->
+    <script type="module" src="/src/frontend/main.js"></script>
+    <!-- Adicione aqui outros scripts específicos da página -->
+</body>
+</html> 

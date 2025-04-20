@@ -1,17 +1,145 @@
 class Auth {
     constructor() {
         console.log('Iniciando Auth...');
-        this.users = JSON.parse(localStorage.getItem('users')) || [];
-        this.currentUser = JSON.parse(localStorage.getItem('currentUser')) || null;
         this.setupPhoneMasks();
         this.bindEvents();
         
-        // Inicializar o estado de autenticação
-        if (this.currentUser) {
-            AuthState.updateUIForLoggedUser(this.currentUser);
-        } else {
-            AuthState.updateUIForLoggedOutUser();
+        this.isAuthenticated = false;
+        this.token = null;
+        this.user = null;
+        this.tokenCheckInterval = null;
+        
+        // Usar a configuração global da API
+        this.API_URL = window.APP_CONFIG?.API_URL || 'http://127.0.0.1:4000/api';
+        console.log('API_URL configurada:', this.API_URL);
+        
+        this.checkAuthState();
+        this.startTokenCheck();
+    }
+
+    startTokenCheck() {
+        if (this.tokenCheckInterval) {
+            clearInterval(this.tokenCheckInterval);
         }
+        
+        // Verificar o token a cada 5 minutos
+        this.tokenCheckInterval = setInterval(() => {
+            if (this.isAuthenticated) {
+                this.checkAuthState();
+            }
+        }, 5 * 60 * 1000);
+    }
+
+    async checkAuthState() {
+        try {
+            const token = localStorage.getItem('token');
+            const user = localStorage.getItem('user');
+            
+            if (!token || !user) {
+                this.handleLogout(false);
+                return;
+            }
+
+            try {
+                const parsedUser = JSON.parse(user);
+                
+                // Validar token com o backend
+                const response = await fetch(`${this.API_URL}/auth/validate`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    }
+                });
+
+                // Se a resposta não for JSON, tratar como erro
+                const contentType = response.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                    throw new Error('Resposta inválida do servidor');
+                }
+
+                const data = await response.json();
+
+                if (!response.ok || !data.valid) {
+                    throw new Error('Token inválido ou expirado');
+                }
+
+                this.isAuthenticated = true;
+                this.token = token;
+                this.user = parsedUser;
+                this.updateUIForLoggedUser(parsedUser);
+                
+            } catch (parseError) {
+                console.error('Erro ao processar dados do usuário:', parseError);
+                this.handleLogout(false);
+            }
+        } catch (error) {
+            console.error('Erro na validação de autenticação:', error);
+            
+            // Se for erro de token inválido ou resposta inválida, fazer logout
+            if (error.message.includes('Token') || error.message.includes('Resposta inválida')) {
+                this.handleLogout(true);
+            }
+        }
+    }
+
+    updateUIForLoggedUser(user) {
+        const authButtons = document.querySelector('.auth-buttons');
+        const userInfo = document.querySelector('.user-info');
+        const btnLogin = document.getElementById('btn-login');
+        const btnSignup = document.getElementById('btn-signup');
+        const adminLink = document.querySelector('.admin-link');
+
+        // Esconder botões de login/signup
+        if (authButtons) {
+            authButtons.style.display = 'none';
+        }
+
+        // Mostrar informações do usuário
+        if (userInfo) {
+            userInfo.style.display = 'flex';
+            const userName = userInfo.querySelector('.user-name');
+            if (userName) {
+                userName.textContent = `Olá, ${user.name}`;
+            }
+            
+            // Garantir que o botão de logout existe e está configurado
+            let btnLogout = userInfo.querySelector('#btn-logout');
+            if (!btnLogout) {
+                btnLogout = document.createElement('button');
+                btnLogout.id = 'btn-logout';
+                btnLogout.className = 'btn-logout';
+                btnLogout.textContent = 'Sair';
+                userInfo.appendChild(btnLogout);
+            }
+            
+            // Adicionar evento de logout
+            btnLogout.addEventListener('click', () => this.handleLogout());
+        }
+        
+        // Configurar link de admin
+        if (adminLink) {
+            adminLink.style.display = user.role === 'admin' ? 'block' : 'none';
+        }
+
+        // Remover classe escondido
+        if (userInfo) {
+            userInfo.classList.remove('escondido');
+        }
+    }
+
+    updateUIForLoggedOutUser() {
+        const authButtons = document.querySelector('.auth-buttons');
+        const userInfo = document.querySelector('.user-info');
+        const btnLogin = document.getElementById('btn-login');
+        const btnSignup = document.getElementById('btn-signup');
+        const adminLink = document.querySelector('.admin-link');
+
+        if (btnLogin) btnLogin.style.display = 'block';
+        if (btnSignup) btnSignup.style.display = 'block';
+        if (userInfo) userInfo.style.display = 'none';
+        if (adminLink) adminLink.style.display = 'none';
     }
 
     setupPhoneMasks() {
@@ -28,110 +156,108 @@ class Auth {
         });
     }
 
-    async hashPassword(password) {
-        const encoder = new TextEncoder();
-        const data = encoder.encode(password);
-        const hash = await crypto.subtle.digest('SHA-256', data);
-        return Array.from(new Uint8Array(hash))
-            .map(b => b.toString(16).padStart(2, '0'))
-            .join('');
-    }
-
-    async handleSignup(e) {
-        e.preventDefault();
-        const name = document.getElementById('signup-name').value;
-        const email = document.getElementById('signup-email').value;
-        const phone = document.getElementById('signup-phone').value;
-        const whatsapp = document.getElementById('signup-whatsapp').value || phone;
-        const password = document.getElementById('signup-password').value;
-        const confirmPassword = document.getElementById('signup-confirm-password').value;
-        const errorElement = document.querySelector('#signup-modal .error-message');
-
-        // Validações
-        if (password !== confirmPassword) {
-            errorElement.textContent = 'As senhas não coincidem';
-            return;
-        }
-
-        if (password.length < 6) {
-            errorElement.textContent = 'A senha deve ter pelo menos 6 caracteres';
-            return;
-        }
-
-        const phoneRegex = /^\(\d{2}\)\s\d{5}-\d{4}$/;
-        if (!phoneRegex.test(phone)) {
-            errorElement.textContent = 'Telefone inválido';
-            return;
-        }
-
+    async handleSignup(formData) {
         try {
-            if (this.users.some(u => u.email === email)) {
-                errorElement.textContent = 'Este email já está cadastrado';
-                return;
+            console.log('Iniciando requisição para a API...');
+            const response = await fetch(`${this.API_URL}/register`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            });
+
+            const data = await response.json();
+            
+            if (response.ok) {
+                return {
+                    success: true,
+                    data
+                };
+            } else {
+                return {
+                    success: false,
+                    error: data.error || 'Erro ao criar conta'
+                };
             }
-
-            const hashedPassword = await this.hashPassword(password);
-            const newUser = {
-                id: Date.now().toString(),
-                name,
-                email,
-                phone,
-                whatsapp,
-                password: hashedPassword,
-                role: 'user',
-                permissions: ['view_store', 'make_purchase'],
-                createdAt: new Date().toISOString(),
-                status: 'active'
-            };
-
-            this.users.push(newUser);
-            localStorage.setItem('users', JSON.stringify(this.users));
-
-            // Login automático após cadastro
-            const { password: _, ...userWithoutPassword } = newUser;
-            this.currentUser = userWithoutPassword;
-            localStorage.setItem('currentUser', JSON.stringify(this.currentUser));
-
-            this.updateAuthUI();
-            this.closeModal(document.getElementById('signup-modal'));
-            this.showNotification('Conta criada com sucesso!', 'success');
         } catch (error) {
             console.error('Erro no cadastro:', error);
-            errorElement.textContent = 'Erro ao criar conta. Tente novamente.';
+            return {
+                success: false,
+                error: 'Erro ao conectar com o servidor. Verifique se o servidor está rodando.'
+            };
         }
     }
 
     async handleLogin(e) {
         e.preventDefault();
-        const email = document.getElementById('login-email').value;
-        const password = document.getElementById('login-password').value;
-        const errorElement = document.querySelector('#login-modal .error-message');
+        
+        const email = document.getElementById('login-email').value.trim();
+        const password = document.getElementById('login-password').value.trim();
+        
+        // Validações básicas
+        if (!email || !password) {
+            this.showErrorMessage('login-form', 'Por favor, preencha todos os campos');
+            return;
+        }
+
+        if (!this.validateEmail(email)) {
+            this.showErrorMessage('login-form', 'Por favor, insira um email válido');
+            return;
+        }
 
         try {
-            const hashedPassword = await this.hashPassword(password);
-            const user = this.users.find(u => u.email === email && u.password === hashedPassword);
+            const loginUrl = `${this.API_URL}/auth/login`;
             
-            if (user) {
-                const { password: _, ...userWithoutPassword } = user;
-                this.currentUser = {
-                    ...userWithoutPassword,
-                    permissions: user.role === 'admin' ? 
-                        ROLES.ADMIN.permissions : 
-                        ROLES.USER.permissions
-                };
-                localStorage.setItem('currentUser', JSON.stringify(this.currentUser));
-                
-                // Atualizar UI usando AuthState
-                AuthState.updateUIForLoggedUser(this.currentUser);
-                this.closeModal(document.getElementById('login-modal'));
-                this.showNotification(`Bem-vindo, ${this.currentUser.name}!`, 'success');
-            } else {
-                errorElement.textContent = 'Email ou senha incorretos';
+            const response = await fetch(loginUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({ email, password })
+            });
+
+            // Verificar se a resposta é JSON
+            const contentType = response.headers.get('content-type');
+            if (!contentType || !contentType.includes('application/json')) {
+                throw new Error('Resposta inválida do servidor');
             }
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || 'Erro ao fazer login');
+            }
+
+            if (!data.token || !data.user) {
+                throw new Error('Resposta inválida do servidor');
+            }
+
+            this.isAuthenticated = true;
+            this.token = data.token;
+            this.user = data.user;
+
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('user', JSON.stringify(data.user));
+
+            // Iniciar verificação periódica do token
+            this.startTokenCheck();
+
+            this.updateUIForLoggedUser(this.user);
+            this.closeModal(document.getElementById('login-modal'));
+            this.showNotification(`Bem-vindo, ${this.user.name}!`, 'success');
+
         } catch (error) {
             console.error('Erro no login:', error);
-            errorElement.textContent = 'Erro ao fazer login. Tente novamente.';
+            this.showErrorMessage('login-form', error.message || 'Erro ao conectar com o servidor');
         }
+    }
+
+    validateEmail(email) {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(email);
     }
 
     showNotification(message, type = 'info') {
@@ -181,39 +307,41 @@ class Auth {
 
     bindEvents() {
         console.log('Vinculando eventos...');
-        // Vincular eventos diretamente
+        
+        // Vincular eventos de formulário
+        const loginForm = document.getElementById('login-form');
+        if (loginForm) {
+            console.log('Form de login encontrado, vinculando evento submit');
+            loginForm.addEventListener('submit', (e) => this.handleLogin(e));
+        } else {
+            console.error('Form de login não encontrado');
+        }
+
+        // Vincular eventos de clique
         document.addEventListener('click', (e) => {
             const target = e.target;
             
-            // Login button
             if (target.id === 'btn-login') {
                 console.log('Clique no botão login');
                 this.showModal('login-modal');
             }
             
-            // Signup button
             if (target.id === 'btn-signup') {
                 console.log('Clique no botão signup');
                 this.showModal('signup-modal');
             }
             
-            // Logout button
             if (target.id === 'btn-logout') {
                 this.handleLogout();
             }
             
-            // Close modal button
             if (target.classList.contains('close-modal')) {
                 const modal = target.closest('.modal');
                 this.closeModal(modal);
             }
         });
 
-        // Form submissions
-        document.getElementById('login-form')?.addEventListener('submit', (e) => this.handleLogin(e));
-        document.getElementById('signup-form')?.addEventListener('submit', (e) => this.handleSignup(e));
-
-        // Close modal on outside click
+        // Fechar modal ao clicar fora
         document.querySelectorAll('.modal').forEach(modal => {
             modal.addEventListener('click', (e) => {
                 if (e.target === modal) {
@@ -222,7 +350,7 @@ class Auth {
             });
         });
 
-        this.updateAuthUI();
+        this.updateUIForLoggedOutUser();
     }
 
     showModal(modalId) {
@@ -253,12 +381,29 @@ class Auth {
         }
     }
 
-    handleLogout() {
-        this.currentUser = null;
-        localStorage.removeItem('currentUser');
-        // Atualizar UI usando AuthState
-        AuthState.updateUIForLoggedOutUser();
-        this.showNotification('Logout realizado com sucesso!', 'success');
+    handleLogout(showNotification = true) {
+        // Limpar o intervalo de verificação
+        if (this.tokenCheckInterval) {
+            clearInterval(this.tokenCheckInterval);
+            this.tokenCheckInterval = null;
+        }
+
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        this.isAuthenticated = false;
+        this.token = null;
+        this.user = null;
+        this.updateUIForLoggedOutUser();
+
+        if (showNotification) {
+            this.showNotification('Sua sessão foi encerrada', 'info');
+        }
+        
+        // Redirecionar para a página inicial se estiver em uma área protegida
+        if (window.location.pathname.startsWith('/admin') || 
+            window.location.pathname.startsWith('/perfil')) {
+            window.location.href = '/';
+        }
     }
 
     updateAuthUI() {
@@ -269,14 +414,14 @@ class Auth {
         const userName = document.querySelector('.user-name');
         const adminLink = document.querySelector('.admin-link');
 
-        if (this.currentUser) {
+        if (this.isAuthenticated) {
             btnLogin.classList.add('escondido');
             btnSignup.classList.add('escondido');
             userInfo.classList.remove('escondido');
-            userName.textContent = `Olá, ${this.currentUser.name}`;
+            userName.textContent = `Olá, ${this.user.name}`;
             
             // Mostrar link de admin apenas para usuários administradores
-            if (this.currentUser.role === 'admin') {
+            if (this.user.role === 'admin') {
                 adminLink?.classList.remove('escondido');
             } else {
                 adminLink?.classList.add('escondido');
@@ -302,13 +447,13 @@ class Auth {
         const authButtons = document.querySelector('.auth-buttons');
         const adminLink = document.querySelector('.admin-link');
 
-        if (this.currentUser) {
-            userInfo.querySelector('.user-name').textContent = this.currentUser.email;
+        if (this.isAuthenticated) {
+            userInfo.querySelector('.user-name').textContent = this.user.email;
             userInfo.classList.remove('escondido');
             authButtons.classList.add('escondido');
             
             // Mostrar link de admin apenas para usuários administradores
-            if (this.currentUser.role === 'admin') {
+            if (this.user.role === 'admin') {
                 adminLink?.classList.remove('escondido');
             } else {
                 adminLink?.classList.add('escondido');
@@ -321,11 +466,11 @@ class Auth {
     }
 
     hasRole(role) {
-        return this.currentUser?.role === role;
+        return this.user?.role === role;
     }
 
     hasPermission(permission) {
-        return this.currentUser?.permissions?.includes(permission);
+        return this.user?.permissions?.includes(permission);
     }
 
     checkAccess(requiredPermissions = []) {
@@ -369,92 +514,99 @@ class Auth {
         localStorage.setItem('users', JSON.stringify(this.users));
         return adminUser;
     }
-}
 
-// Inicialização
-let auth;
-function initAuth() {
-    console.log('Inicializando autenticação...');
-    auth = new Auth();
-}
-
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initAuth);
-} else {
-    initAuth();
-}
-
-// Elementos do DOM
-const signupModal = document.getElementById('signup-modal');
-const signupForm = document.getElementById('signup-form');
-const btnSignup = document.getElementById('btn-signup');
-const closeButtons = document.querySelectorAll('.close-modal');
-
-// Event Listeners
-btnSignup.addEventListener('click', () => {
-    signupModal.classList.remove('escondido');
-});
-
-closeButtons.forEach(button => {
-    button.addEventListener('click', () => {
-        signupModal.classList.add('escondido');
-    });
-});
-
-signupForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    
-    const name = document.getElementById('signup-name').value;
-    const email = document.getElementById('signup-email').value;
-    const phone = document.getElementById('signup-phone').value;
-    const whatsapp = document.getElementById('signup-whatsapp').value;
-    const password = document.getElementById('signup-password').value;
-    const confirmPassword = document.getElementById('signup-confirm-password').value;
-    const errorMessage = signupForm.querySelector('.error-message');
-
-    // Validar senha
-    if (password !== confirmPassword) {
-        errorMessage.textContent = 'As senhas não coincidem';
-        return;
+    getToken() {
+        return this.token;
     }
 
-    try {
-        const response = await fetch('http://localhost:3000/api/register', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                name,
-                email,
-                password,
-                phone,
-                whatsapp
-            })
+    getUser() {
+        return this.user;
+    }
+
+    isLoggedIn() {
+        return this.isAuthenticated;
+    }
+}
+
+// Inicialização e disponibilização global
+window.auth = new Auth();
+
+// Event Listeners
+document.addEventListener('DOMContentLoaded', () => {
+    const signupModal = document.getElementById('signup-modal');
+    const signupForm = document.getElementById('signup-form');
+    const btnSignup = document.getElementById('btn-signup');
+    const closeButtons = document.querySelectorAll('.close-modal');
+
+    if (btnSignup) {
+        btnSignup.addEventListener('click', () => {
+            console.log('Clique no botão signup');
+            signupModal.classList.remove('escondido');
         });
+    }
 
-        const data = await response.json();
+    closeButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const modal = button.closest('.modal');
+            if (modal) {
+                modal.classList.add('escondido');
+            }
+        });
+    });
 
-        if (response.ok) {
-            // Sucesso no registro
-            errorMessage.textContent = '';
-            errorMessage.style.color = 'green';
-            errorMessage.textContent = 'Conta criada com sucesso!';
+    if (signupForm) {
+        signupForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            console.log('Formulário de cadastro enviado');
             
-            // Limpar formulário
-            signupForm.reset();
-            
-            // Fechar modal após 2 segundos
-            setTimeout(() => {
-                signupModal.classList.add('escondido');
-            }, 2000);
-        } else {
-            // Erro no registro
-            errorMessage.style.color = 'red';
-            errorMessage.textContent = data.error || 'Erro ao criar conta';
-        }
-    } catch (error) {
-        errorMessage.style.color = 'red';
-        errorMessage.textContent = 'Erro ao conectar com o servidor';
+            const formData = {
+                name: document.getElementById('signup-name').value,
+                email: document.getElementById('signup-email').value,
+                phone: document.getElementById('signup-phone').value,
+                whatsapp: document.getElementById('signup-whatsapp').value,
+                password: document.getElementById('signup-password').value,
+                confirmPassword: document.getElementById('signup-confirm-password').value
+            };
+
+            const errorMessage = signupForm.querySelector('.error-message');
+
+            // Validar senha
+            if (formData.password !== formData.confirmPassword) {
+                errorMessage.textContent = 'As senhas não coincidem';
+                return;
+            }
+
+            try {
+                const result = await window.auth.handleSignup(formData);
+                
+                if (result.success) {
+                    errorMessage.style.color = 'green';
+                    errorMessage.textContent = 'Conta criada com sucesso!';
+                    
+                    // Salvar token e dados do usuário
+                    localStorage.setItem('token', result.data.token);
+                    localStorage.setItem('user', JSON.stringify(result.data.user));
+                    
+                    // Atualizar UI
+                    window.auth.isAuthenticated = true;
+                    window.auth.token = result.data.token;
+                    window.auth.user = result.data.user;
+                    window.auth.updateAuthUI();
+                    
+                    // Limpar formulário e fechar modal
+                    signupForm.reset();
+                    setTimeout(() => {
+                        signupModal.classList.add('escondido');
+                    }, 2000);
+} else {
+                    errorMessage.style.color = 'red';
+                    errorMessage.textContent = result.error;
+                }
+            } catch (error) {
+                console.error('Erro no cadastro:', error);
+                errorMessage.style.color = 'red';
+                errorMessage.textContent = 'Erro ao conectar com o servidor. Verifique se o servidor está rodando.';
+            }
+        });
     }
 }); 

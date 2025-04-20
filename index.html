@@ -18,10 +18,10 @@
                     <div class="auth-buttons">
                         <button id="btn-login" class="auth-btn">Login</button>
                         <button id="btn-signup" class="auth-btn">Inscreva-se</button>
-                        <div class="user-info escondido">
-                            <span class="user-name"></span>
-                            <button id="btn-logout" class="auth-btn">Sair</button>
-                        </div>
+                    </div>
+                    <div class="user-info escondido">
+                        <span class="user-name"></span>
+                        <button id="btn-logout" class="btn-logout">Sair</button>
                     </div>
                 </div>
             </div>
@@ -57,25 +57,21 @@
     <!-- Modais de Autenticação -->
     <div id="login-modal" class="modal escondido">
         <div class="modal-content">
-            <div class="modal-header">
-                <h2>Login</h2>
-                <span class="close-modal">&times;</span>
-            </div>
-            <form id="login-form">
+            <span class="close-modal">&times;</span>
+            <h2>Login</h2>
+            <form id="login-form" onsubmit="return false;">
                 <div class="form-group">
                     <label for="login-email">Email</label>
-                    <input type="email" id="login-email" required>
+                    <input type="email" id="login-email" name="email" required>
                 </div>
                 <div class="form-group">
                     <label for="login-password">Senha</label>
-                    <input type="password" id="login-password" required>
+                    <input type="password" id="login-password" name="password" required>
                 </div>
-                <div class="form-actions">
-                    <button type="submit" class="btn-submit">Entrar</button>
-                    <a href="#" id="forgot-password">Esqueceu a senha?</a>
-                </div>
-                <div class="error-message"></div>
+                <div class="error-message" style="color: red; display: none;"></div>
+                <button type="submit" class="btn-submit">Entrar</button>
             </form>
+            <p>Não tem uma conta? <a href="#" id="show-signup">Cadastre-se</a></p>
         </div>
     </div>
 
@@ -197,46 +193,15 @@
     </footer>
 
     <!-- Scripts -->
-    <script src="shared.js"></script>
-    <script src="menu.js"></script>
+    <script type="text/javascript" src="src/frontend/config.js"></script>
     <script src="auth.js"></script>
-    <script src="carousel.js"></script>
+    <script type="module" src="app.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Inicialização do menu mobile
-            const menuHamburguer = document.querySelector('.menu-hamburguer');
-            const menuPrincipal = document.querySelector('.menu-principal');
-            const body = document.body;
-
-            // Criar overlay se não existir
-            let overlay = document.querySelector('.menu-overlay');
-            if (!overlay) {
-                overlay = document.createElement('div');
-                overlay.className = 'menu-overlay';
-                body.appendChild(overlay);
+        document.addEventListener('DOMContentLoaded', () => {
+            // Inicializar a autenticação
+            if (!window.auth) {
+                window.auth = new Auth();
             }
-
-            // Função para alternar menu
-            function toggleMenu() {
-                menuHamburguer.classList.toggle('ativo');
-                menuPrincipal.classList.toggle('ativo');
-                overlay.classList.toggle('ativo');
-                body.style.overflow = menuPrincipal.classList.contains('ativo') ? 'hidden' : '';
-            }
-
-            // Event Listeners
-            menuHamburguer.addEventListener('click', function(e) {
-                e.stopPropagation();
-                toggleMenu();
-            });
-
-            overlay.addEventListener('click', toggleMenu);
-
-            menuPrincipal.querySelectorAll('.nav-link').forEach(link => {
-                link.addEventListener('click', toggleMenu);
-            });
-
-            // Código do carrossel existente...
         });
     </script>
 </body>
