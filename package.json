@@ -22,9 +22,12 @@
     "winston": "^3.11.0"
   },
   "devDependencies": {
+    "@types/compression": "^1.7.5",
+    "@types/cookie-parser": "^1.4.8",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.1",
     "@types/jsonwebtoken": "^9.0.9",
+    "@types/morgan": "^1.9.9",
     "@types/node": "^22.14.1",
     "nodemon": "^3.1.0",
     "prisma": "^5.10.2"
